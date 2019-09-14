@@ -1,6 +1,6 @@
 <template>
   <div>
-    <self-table :params="params" :list="" :loading="" :data="" :columns=""></self-table>
+    <self-table :params="params" :list="getGeneralList" :loading="loading" :data="generalArray" :columns="columns"></self-table>
   </div>
 </template>
 
@@ -14,7 +14,16 @@
         generalArray:[]
       }
     },
-    methods:{}
+    computed:{
+      columns(){
+
+      }
+    },
+    methods:{
+      getGeneralList(data){
+
+      }
+    }
   };
 </script>
 
