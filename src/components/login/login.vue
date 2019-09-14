@@ -50,7 +50,7 @@
     },
     data(){
       return{
-        form:{username:'',password:''}
+        form:{username:'admin',password:'123'}
       }
     },
     methods:{
