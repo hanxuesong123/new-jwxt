@@ -27,3 +27,11 @@ export const updateTeacher = data =>{
 export const saveOrUpdate = data => {
   return data.id ? updateTeacher(data) : saveTeacher(data);
 };
+
+export const findTeachers = () =>{
+  return axios.request({
+    url:'user/findTeachers',
+    data:null,
+    method:'get'
+  });
+};

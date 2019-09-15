@@ -36,8 +36,8 @@ export default [
     }
   },
   {
-    path: "/qnzg",
-    name: "qnzg",
+    path: "/academic",
+    name: "academic",
     component: Main,
     meta: {
       title: "学术部门",
@@ -58,8 +58,8 @@ export default [
     }
   },
   {
-    path: "/quality3",
-    name: "quality3",
+    path: "/quality",
+    name: "quality",
     component: Main,
     meta: {
       title: "教质部门",
@@ -102,6 +102,8 @@ export default [
     }
   },
   /************ 以上为垂直导航  ***********/
+
+  //综合管理
   {
     path:'/base',
     name:'base',
@@ -158,6 +160,62 @@ export default [
       }
     ]
   },
+    //学术部门
+  {
+    path:'/curriculum',
+    name:'curriculum',
+    component:Main,
+    meta:{
+      title:'课程设计',
+      icon:'',
+      hideInMenu:false,
+      parentName:'academic'
+    },
+    children:[
+      {
+        path:'curriculum_scanner',
+        name:'curriculum_scanner',
+        component:()=>import('@/views/academic/curriculum/scanner.vue'),
+        meta:{
+          title:'课程录入',
+          icon:'',
+          hideInMenu:false
+        }
+      }
+    ]
+  },
+  {
+    path:'/exam',
+    name:'exam',
+    component:Main,
+    meta: {
+      title: "考试中心",
+      icon:'',
+      hideInMenu: false,
+      parentName: "academic"
+    },
+    children:[
+      {
+        path: "question",
+        name: "question",
+        component: () => import("@/views/academic/question/scanner.vue"),
+        meta: {
+          title: "试题录入",
+          hideInMenu: false
+        }
+      },
+      {
+        path: "scanner_exam",
+        name: "scanner_exam",
+        //component: () => import("@/views/qnzg/exam_scanner.vue"),
+        meta: {
+          title: "发布试卷",
+          hideInMenu: false
+        }
+      }
+    ]
+  },
+    //行政部门
   {
     path:'/staff_management',
     name:'staff_management',
@@ -175,6 +233,30 @@ export default [
         component:()=>import("@/views/permission/user.vue"),
         meta:{
           title:'员工录入',
+          icon:'',
+          hideInMenu:false
+        }
+      }
+    ]
+  },
+    // 教质部门
+  {
+    path:'/classes_management',
+    name:'classes_management',
+    component:Main,
+    meta:{
+      title:'班级管理',
+      icon:'',
+      hideInMenu:false,
+      parentName:'quality'
+    },
+    children:[
+      {
+        path:'classes_scanner',
+        name:'classes_scanner',
+        component:()=>import("@/views/quality/classes/scanner.vue"),
+        meta:{
+          title:'班级录入',
           icon:'',
           hideInMenu:false
         }

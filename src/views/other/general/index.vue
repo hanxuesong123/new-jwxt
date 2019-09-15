@@ -33,15 +33,15 @@
               return h('Tag',{ props:{color:params.row.status == '1' ? 'success':'error'} },params.row.status == '1' ? '启用':'禁用');
             }},
           {key:'opt',title:'操作',align:'center',renderHeader(h,params){
-              return h('Button',{props:{type:'success',size:'small',icon:'md-add',ghost:true},on:{click(){
+              return h('Button',{props:{type:'success',size:'small',icon:'md-add',ghost:true,disabled:!that.$access.has_permission('POINT-GENERAL-ADD')},on:{click(){
                     that.openWindow('addEditGenreal',null);
                   }}},'添加字典');
             },render(h,params){
               return h('span',[
-                h('Button',{props:{type:'primary',icon:'ios-hammer',size:'small',ghost:true},style:{marginRight:'5px'},on:{click(){
+                h('Button',{props:{type:'primary',icon:'ios-hammer',size:'small',ghost:true,disabled:!that.$access.has_permission('POINT-GENERAL-OPT')},style:{marginRight:'5px'},on:{click(){
                       that.opt(params.row)
                     }}},'启禁'),
-                h('Button',{props:{type:'primary',icon:'md-cut',size:'small',ghost:true},on:{click(){
+                h('Button',{props:{type:'primary',icon:'md-cut',size:'small',ghost:true,disabled:!that.$access.has_permission('POINT-GENERAL-UPDATE')},on:{click(){
                       that.openWindow('addEditGenreal',params.row);
                     }}},'修改')
               ],'');

@@ -8,6 +8,14 @@ export const findGeneralByCode = data =>{
   });
 };
 
+export const findChapterByCodeAndStage = data =>{
+  return axios.request({
+    data:data,
+    url:'general/findChapterByCodeAndStage',
+    method:'post'
+  });
+};
+
 export const  list = data =>{
   return axios.request({
     data:data,
