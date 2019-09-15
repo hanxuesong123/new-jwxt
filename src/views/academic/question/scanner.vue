@@ -12,15 +12,21 @@
     <Card :bordered="false" :dis-hover="true">
       <self-table :params="params" :loading="loading" :list="getQuestionList" :data="questionArray" :columns="columns"></self-table>
     </Card>
+
+    <add-edit-question ref="addEditQuestion"></add-edit-question>
+
   </div>
 </template>
 
 <script>
 
-  import { list } from '@/api/quality/questions';
+  import { list } from '@/api/academic/questions';
 
   export default {
     name: 'question',
+    components:{
+      AddEditQuestion:()=>import("@/views/academic/child/add-edit-question.vue")
+    },
     data(){
       return{
         loading:true,
@@ -41,7 +47,18 @@
         this.getQuestionList(this.params);
       },
       openWindow(name,data){
-
+        if(data == null){
+          this.$refs[name].questionObject = {};
+          this.$refs[name].questionObject.type = null;
+          this.$refs[name].$refs['ask'].askObject = {};
+          this.$refs[name].$refs['single'].singleObject = {};
+          this.$refs[name].$refs['mutiple'].mutipleObject = {};
+          this.$refs[name].$refs['upper'].upperObject = {};
+        } else{
+          this.$refs[name].questionObject = data;
+          this.$refs[name].totalObject = data;
+        }
+        this.$refs[name].value = true;
       }
     },
     computed:{

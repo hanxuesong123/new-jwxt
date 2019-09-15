@@ -52,3 +52,11 @@ export const opt = data =>{
     method:'post'
   });
 };
+
+export const findGenerals = () => {
+  return axios.request({
+    data:null,
+    url:'general/findGenerals',
+    method:'get'
+  });
+}

@@ -6,7 +6,7 @@
         <h1 class="text-gradient">LOGO</h1>
         </Col>
         <Col :span="6">
-        <h1 class="text-gradient" style="font-size: 30px">青鸟教务平台</h1>
+        <h1 class="text-gradient" style="font-size: 30px">安吉星★青鸟教务</h1>
         </Col>
         <Col :span="12" style="text-align: center">
         <Menu theme="dark" class="color" mode="horizontal" @on-select="selectParent" style="background-color: black;color: #ff6600;">
