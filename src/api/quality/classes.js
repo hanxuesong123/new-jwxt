@@ -8,6 +8,14 @@ export const getClassesList = data => {
   });
 };
 
+export const findClasses = () => {
+  return axios.request({
+    url:'classes/findClasses',
+    data:null,
+    method:'get'
+  });
+};
+
 export const saveClasses = data => {
   return axios.request({
     url:'classes/saveClasses',

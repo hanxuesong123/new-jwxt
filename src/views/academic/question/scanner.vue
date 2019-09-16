@@ -7,7 +7,7 @@
         <Radio label="3">问答题</Radio>
         <Radio label="4">上机题</Radio>
       </RadioGroup>
-      <Button type="primary" icon="md-add" style="margin: 0px 5px 0px 5px" @click="openWindow('addEditQuestion',null)">新增试题</Button>
+      <Button type="primary" icon="md-add" style="margin: 0px 5px 0px 5px" @click="openWindow('addEditQuestion',null)" :disabled="disabled.add">新增试题</Button>
     </Card>
     <Card :bordered="false" :dis-hover="true">
       <self-table :params="params" :loading="loading" :list="getQuestionList" :data="questionArray" :columns="columns"></self-table>
@@ -20,7 +20,7 @@
 
 <script>
 
-  import { list } from '@/api/academic/questions';
+  import { list,opt } from '@/api/academic/questions';
 
   export default {
     name: 'question',
@@ -31,6 +31,9 @@
       return{
         loading:true,
         questionArray:[],
+        disabled:{
+          add:!this.$access.has_permission('POINT-QUESTION-ADD')
+        },
         params:{page:1,size:20,total:0,type:'1'}
       }
     },
@@ -55,10 +58,39 @@
           this.$refs[name].$refs['mutiple'].mutipleObject = {};
           this.$refs[name].$refs['upper'].upperObject = {};
         } else{
+
+          let s1 = data.upperStatus;
+          let s2 = data.singleStatus;
+          let s3 = data.mutipleStatus;
+          let s4 = data.askStatus;
+
+          if(s1 && s1 === '2'){ this.$Message.error("禁用数据无法修改");return false };
+          if(s2 && s2 === '2'){ this.$Message.error("禁用数据无法修改");return false };
+          if(s3 && s3 === '2'){ this.$Message.error("禁用数据无法修改");return false };
+          if(s4 && s4 === '2'){ this.$Message.error("禁用数据无法修改");return false };
+
+
           this.$refs[name].questionObject = data;
           this.$refs[name].totalObject = data;
         }
         this.$refs[name].value = true;
+      },
+      opt(id){
+        this.$Modal.confirm({
+          title:'友情提示',
+          content:`确定该操作吗?`,
+          onOk:()=>{
+            opt(id).then(res=>{
+              if(res.data.code === 10000){
+                this.$Message.success(res.data.message);
+              }else{
+                this.$Message.error(res.data.message);
+              }
+              this.getQuestionList(this.params);
+            })
+          }
+        })
+
       }
     },
     computed:{
@@ -86,11 +118,11 @@
               }},
             {key:'opt',title:"操作",align:'center',render(h,params){
                 return h('span',[
-                 h('Button',{props:{type:'primary',size:'small',icon:'md-cut',ghost:true},style:{marginRight:'5px'},on:{click(){
+                 h('Button',{props:{type:'primary',size:'small',icon:'md-cut',ghost:true,disabled: !that.$access.has_permission('POINT-QUESTION-UPDATE')},style:{marginRight:'5px'},on:{click(){
                    that.openWindow("addEditQuestion",params.row);
                      }}},'修改'),
-                  h('Button',{props:{type:'primary',size:'small',icon:'ios-hammer',ghost:true},on:{click(){
-                    alert("b")
+                  h('Button',{props:{type:'primary',size:'small',icon:'ios-hammer',ghost:true,disabled: !that.$access.has_permission('POINT-QUESTION-OPT')},on:{click(){
+                    that.opt(params.row.id)
                       }}},'启禁')
                 ],'');
               }}
@@ -117,11 +149,11 @@
               }},
             {key:'opt',title:"操作",align:'center',render(h,params){
                 return h('span',[
-                  h('Button',{props:{type:'primary',size:'small',icon:'md-cut',ghost:true},style:{marginRight:'5px'},on:{click(){
+                  h('Button',{props:{type:'primary',size:'small',icon:'md-cut',ghost:true,disabled: !that.$access.has_permission('POINT-QUESTION-UPDATE')},style:{marginRight:'5px'},on:{click(){
                         that.openWindow("addEditQuestion",params.row);
                       }}},'修改'),
-                  h('Button',{props:{type:'primary',size:'small',icon:'ios-hammer',ghost:true},on:{click(){
-                        alert("b")
+                  h('Button',{props:{type:'primary',size:'small',icon:'ios-hammer',ghost:true,disabled: !that.$access.has_permission('POINT-QUESTION-OPT')},on:{click(){
+                        that.opt(params.row.id)
                       }}},'启禁')
                 ],'');
               }}
@@ -148,11 +180,11 @@
               }},
             {key:'opt',title:"操作",align:'center',render(h,params){
                 return h('span',[
-                  h('Button',{props:{type:'primary',size:'small',icon:'md-cut',ghost:true},style:{marginRight:'5px'},on:{click(){
+                  h('Button',{props:{type:'primary',size:'small',icon:'md-cut',ghost:true,disabled: !that.$access.has_permission('POINT-QUESTION-UPDATE')},style:{marginRight:'5px'},on:{click(){
                         that.openWindow("addEditQuestion",params.row);
                       }}},'修改'),
-                  h('Button',{props:{type:'primary',size:'small',icon:'ios-hammer',ghost:true},on:{click(){
-                        alert("b")
+                  h('Button',{props:{type:'primary',size:'small',icon:'ios-hammer',ghost:true,disabled: !that.$access.has_permission('POINT-QUESTION-OPT')},on:{click(){
+                        that.opt(params.row.id)
                       }}},'启禁')
                 ],'');
               }}
@@ -175,7 +207,7 @@
               }},
             {key:'upperContent',title:'题干',align:'center',tooltip:true},
             {key:'downResources',title:'资源',align:'center',render(h,params){
-                return h('Button',{props:{ghost:true,type:'primary',size:'small'},style:{color:'blank'},on:{click(){
+                return h('Button',{props:{ghost:true,type:'primary',size:'small',disabled: !that.$access.has_permission('POINT-QUESTION-DOWNLOAD')},style:{color:'blank'},on:{click(){
                       that.$Modal.confirm({
                         title:'友情提示',
                         content:`确定要下载资源吗?`,
@@ -190,11 +222,11 @@
               }},
             {key:'opt',title:"操作",align:'center',render(h,params){
                 return h('span',[
-                  h('Button',{props:{type:'primary',size:'small',icon:'md-cut',ghost:true},style:{marginRight:'5px'},on:{click(){
+                  h('Button',{props:{type:'primary',size:'small',icon:'md-cut',ghost:true,disabled: !that.$access.has_permission('POINT-QUESTION-UPDATE')},style:{marginRight:'5px'},on:{click(){
                         that.openWindow("addEditQuestion",params.row);
                       }}},'修改'),
-                  h('Button',{props:{type:'primary',size:'small',icon:'ios-hammer',ghost:true},on:{click(){
-                        alert("b")
+                  h('Button',{props:{type:'primary',size:'small',icon:'ios-hammer',ghost:true,disabled: !that.$access.has_permission('POINT-QUESTION-OPT')},on:{click(){
+                        that.opt(params.row.id)
                       }}},'启禁')
                 ],'');
               }}

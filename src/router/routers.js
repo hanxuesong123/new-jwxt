@@ -207,7 +207,7 @@ export default [
       {
         path: "scanner_exam",
         name: "scanner_exam",
-        //component: () => import("@/views/qnzg/exam_scanner.vue"),
+        component: () => import("@/views/academic/exam/scanner.vue"),
         meta: {
           title: "发布试卷",
           hideInMenu: false

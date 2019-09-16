@@ -229,7 +229,110 @@
         }
       },
       saveOrUpdate(name){
+        this.$refs[name].validate(valid=>{
+          if(valid){ //系统校验通过
 
+
+
+            //自定义校验
+            if(this.questionObject.type.includes("1")){
+              this.requestParams = {};
+              let singleData = this.single.singleObject; //单选题数据
+
+              if(!singleData.singleContent){this.$Message.error("单选题题干不能为空");return false}
+              if(singleData.singleContent.length < 3){this.$Message.error("单选题干不能小于3字符");return false}
+              if(singleData.singleContent.length > 250){this.$Message.error("单选题干不能超过250字符");return false}
+
+              if(!singleData.singleOptionA){this.$Message.error("选项A不能为空");return false}
+              if(singleData.singleOptionA.length < 3){this.$Message.error("选项A不能小于3字符");return false}
+              if(singleData.singleOptionA.length > 250){this.$Message.error("选项A不能超过250字符");return false}
+
+              if(!singleData.singleOptionB){this.$Message.error("选项B不能为空");return false}
+              if(singleData.singleOptionB.length < 3){this.$Message.error("选项B不能小于3字符");return false}
+              if(singleData.singleOptionB.length > 250){this.$Message.error("选项B不能超过250字符");return false}
+
+              if(!singleData.singleOptionC){this.$Message.error("选项C不能为空");return false}
+              if(singleData.singleOptionC.length < 3){this.$Message.error("选项C不能小于3字符");return false}
+              if(singleData.singleOptionC.length > 250){this.$Message.error("选项C不能超过250字符");return false}
+
+              if(!singleData.singleOptionD){this.$Message.error("选项D不能为空");return false}
+              if(singleData.singleOptionD.length < 3){this.$Message.error("选项D不能小于3字符");return false}
+              if(singleData.singleOptionD.length > 250){this.$Message.error("选项D不能超过250字符");return false}
+
+              if(!singleData.singleAsk){this.$Message.error("答案不能为空");return false}
+
+              this.requestParams = Object.assign(this.questionObject,singleData);//合并数据
+
+            }else if(this.questionObject.type.includes("2")){
+
+              this.requestParams = {};
+              let mutipleData = this.mutiple.mutipleObject;
+
+              if(!mutipleData.mutipleContent){this.$Message.error("多选题干不能为空");return false}
+              if(mutipleData.mutipleContent.length < 3){this.$Message.error("多选题干不能小于3字符");return false}
+              if(mutipleData.mutipleContent.length > 250){this.$Message.error("多选题干不能超过250字符");return false}
+
+              if(!mutipleData.mutipleOptionA){this.$Message.error("选项A不能为空");return false}
+              if(mutipleData.mutipleOptionA.length < 3){this.$Message.error("选项A不能小于3字符");return false}
+              if(mutipleData.mutipleOptionA.length > 250){this.$Message.error("选项A不能超过250字符");return false}
+
+              if(!mutipleData.mutipleOptionB){this.$Message.error("选项B不能为空");return false}
+              if(mutipleData.mutipleOptionB.length < 3){this.$Message.error("选项B不能小于3字符");return false}
+              if(mutipleData.mutipleOptionB.length > 250){this.$Message.error("选项B不能超过250字符");return false}
+
+              if(!mutipleData.mutipleOptionC){this.$Message.error("选项C不能为空");return false}
+              if(mutipleData.mutipleOptionC.length < 3){this.$Message.error("选项C不能小于3字符");return false}
+              if(mutipleData.mutipleOptionC.length > 250){this.$Message.error("选项C不能超过250字符");return false}
+
+              if(!mutipleData.mutipleOptionD){this.$Message.error("选项D不能为空");return false}
+              if(mutipleData.mutipleOptionD.length < 3){this.$Message.error("选项D不能小于3字符");return false}
+              if(mutipleData.mutipleOptionD.length > 250){this.$Message.error("选项D不能超过250字符");return false}
+
+              if(!mutipleData.mutipleAsk){this.$Message.error('多选题答案不能为空');return false;}
+              if(mutipleData.mutipleAsk.length == 1){this.$Message.error('至少两个选项');return false;}
+
+              this.requestParams = Object.assign(this.questionObject,mutipleData);
+
+            }else if(this.questionObject.type.includes("3")){
+              this.requestParams = {};
+              let askData = this.ask.askObject;
+
+              if(!askData.askContent) {this.$Message.error('问答题干不能为空'); return false};
+              if(askData.askContent.length < 3) {this.$Message.error('问答题干不能小于3字符'); return false};
+              if(askData.askContent.length > 250) {this.$Message.error('问答题干不能超过250字符'); return false};
+
+              this.requestParams = Object.assign(this.questionObject,askData);
+
+            }else if(this.questionObject.type.includes("4")){
+
+              let upperData = this.upper.upperObject;
+
+              if(!upperData.upperContent) { this.$Message.error('上机题干不能为空');return false};
+              if(upperData.upperContent.length < 3) { this.$Message.error('上机题干不能小于3个字符');return false};
+
+              if(this.questionObject.id == null){
+                if(!upperData.file){this.$Message.error('必须上传文件');return false}
+              }
+
+              this.requestParams = Object.assign(this.questionObject,upperData);
+            }
+
+            if(this.questionObject.type.includes("4")){
+              //上传文件后,会提交表单
+              this.upper.$refs['upload'].post(this.upper.upperObject.file);
+            }else{
+              saveOrUpdate(this.requestParams).then(res=>{
+                res.data.code == 10000 ? this.$Message.success(res.data.message) : this.$Message.error(res.data.message);
+                this.value = false;
+                this.$parent.getQuestionList(this.$parent.params);
+              })
+            }
+
+          }else{
+            this.$Message.error('请操作必选项');
+            return false;
+          }
+        });
       },
       cancel(){
         this.value = false;

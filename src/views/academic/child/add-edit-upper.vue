@@ -1,20 +1,20 @@
 <template>
     <div :style="{display:upperStyle}">
       <FormItem prop="upperContent" label="题干" style="width: 600px">
-        <i-editor v-model="upperObject.upperContent"></i-editor>
+        <Input type="textarea" placeholder="请输入上机题题干" v-model="upperObject.upperContent"  />
       </FormItem>
       <FormItem prop="" label="上传素材">
         <Upload ref="upload"
                 name="file"
                 :max-size="1000 * 1024 * 500"
                 :format="['zip']"
-                action="http://localhost:56710/upload/uploadUpperFile"
+                :action="url"
                 :before-upload="beforeUpload"
                 :on-success="uploadSuccess"
                 :on-error="uploadError"
                 :on-format-error="formatError"
                 :on-exceeded-size="exceededSize">
-          <Button ref="btn" type="success" :disabled="btnDisabled">上传</Button>
+          <Button ref="btn" type="success" :disabled="btnDisabled || !disabledValue">上传</Button>
         </Upload>
       </FormItem>
     </div>
@@ -23,6 +23,7 @@
 <script>
 
   import { saveOrUpdate } from '@/api/academic/questions';
+  import { getToken } from '@/utils/tools';
 
   export default {
     name: 'add-edit-upper',
@@ -31,7 +32,9 @@
       return {
         upperStyle:'none',
         upperObject:{},
-        btnDisabled:false
+        disabledValue:this.$access.has_permission('POINT-QUESTION-UPLOAD'),
+        btnDisabled:false,
+        url:'http://localhost:56710/question/upload?token='+ getToken()
       };
     },
     watch:{
@@ -53,9 +56,13 @@
         this.$Message.error("只能上传小于500MB的文件");
       },
       uploadSuccess(response,file,fileList){
+        console.log(response)
         //获得父组件的requestParams 把id赋值给他
         if(this.requestParams){
+          //先文件上传,得到upper对象,把upper,id进行赋值
           this.requestParams.id = response.data.id;
+          console.log("upper:",this.requestParams)
+          //调用接口,修改upper
           saveOrUpdate(this.requestParams).then(res=>{
             res.data.code == 10000 ? this.$Message.success(res.data.message) : this.$Message.error(res.data.message);
             this.$refs['upload'].clearFiles();
