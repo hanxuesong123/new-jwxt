@@ -11,7 +11,7 @@
         </FormItem>
 
         <FormItem prop="lessionId" label="课程" style="width: 600px">
-          <Select  v-model="questionObject.lessionId" :disabled="disabledValue">
+          <Select  filterable v-model="questionObject.lessionId" :disabled="disabledValue">
             <OptionGroup :label="general.general.name" v-for="general in lessionArray" :key="general.id">
               <Option v-for="item in general.children" :key="item.id" :value="item.id">{{item.name}}</Option>
             </OptionGroup>
@@ -27,7 +27,7 @@
         </FormItem>
 
         <FormItem  error="请选择企业" :required="(questionObject.sourced && questionObject.sourced.includes('3')) ? true : false" prop="companyId" label="企业" :style="{display: styleValue,width: '600px'}">
-          <Select v-model="questionObject.companyId" filterable>
+          <Select filterable v-model="questionObject.companyId" filterable>
             <Option :value="item.id" :key="item.id" v-for="item in companyArray">{{item.name}}</Option>
           </Select>
         </FormItem>

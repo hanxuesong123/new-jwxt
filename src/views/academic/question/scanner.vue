@@ -20,7 +20,7 @@
 
 <script>
 
-  import { list,opt } from '@/api/academic/questions';
+  import { list,opt,downLoad } from '@/api/academic/questions';
 
   export default {
     name: 'question',
@@ -207,14 +207,21 @@
               }},
             {key:'upperContent',title:'题干',align:'center',tooltip:true},
             {key:'downResources',title:'资源',align:'center',render(h,params){
-                return h('Button',{props:{ghost:true,type:'primary',size:'small',disabled: !that.$access.has_permission('POINT-QUESTION-DOWNLOAD')},style:{color:'blank'},on:{click(){
-                      that.$Modal.confirm({
-                        title:'友情提示',
-                        content:`确定要下载资源吗?`,
-                        onOk:()=>{
-                          alert("A")
-                        }
-                      })
+                return h('a',{props:{disabled: !that.$access.has_permission('POINT-QUESTION-DOWNLOAD')},on:{click(){
+                      if(params.row.upperUrl){
+                        that.$Modal.confirm({
+                          title:'友情提示',
+                          content:'确定要下载吗?',
+                          onOk(){
+                            window.location.href = params.row.upperUrl;
+                          }
+                        })
+
+                      }else{
+                        that.$Message.error("没有可供下载的资源");
+                        return false;
+                      }
+
                     }}},'下载');
               }},
             {key:'upperStatus',title:'启禁',align:'center',render(h,params){

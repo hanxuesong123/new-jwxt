@@ -24,6 +24,16 @@ export const update = data =>{
   });
 }
 
+export const downLoad = data =>{
+  return axios.request({
+    url:'question/downLoad',
+    method:'post',
+    data:data
+  });
+}
+
+
+
 export const saveOrUpdate = data =>{
   return data.id ? update(data) : save(data)
 }
