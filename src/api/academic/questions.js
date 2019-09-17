@@ -45,3 +45,13 @@ export const opt = id =>{
     data:null
   });
 }
+
+export const count = data => {
+  return axios.request({
+    url:`question/count/${data}`,
+    data:null,
+    method:'get'
+  });
+}
+
+

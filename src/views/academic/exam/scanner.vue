@@ -24,23 +24,30 @@
       <Button type="info" @click="getExamList(params)" style="width: 150px;margin-right: 5px;float: left">查询数据</Button>
       <Button type="info" @click="params = {page:1,size:10},getExamList(params)" style="width: 150px;margin-right: 5px;float: left">重置查询</Button>
 
-      <Button type="primary" @click="openWindow" style="width: 150px;margin-right: 5px;float: right">新增试卷(选择/问答)</Button>
-      <Button type="primary" @click="openWindow" style="width: 150px;margin-right: 5px;float: right">新增试卷(上机)</Button>
+      <Button type="primary" @click="openWindow('addEditExam',null)" style="width: 150px;margin-right: 5px;float: right">新增试卷(选择/问答)</Button>
+      <Button type="primary" @click="openUpperWindow('addEditUpperExam',null)" style="width: 150px;margin-right: 5px;float: right">新增试卷(上机)</Button>
     </Card>
     <Card :bordered="false" :dis-hover="true">
       <self-table :list="getExamList" :data="examArray" :columns="columns" :loading="loading" :params="params"></self-table>
     </Card>
+
+    <add-edit-exam ref="addEditExam"></add-edit-exam>
+    <add-edit-upper-exam ref="addEditUpperExam"></add-edit-upper-exam>
   </div>
 </template>
 
 <script>
 
   import { formatDate } from '@/utils/tools';
-  import { list } from '@/api/academic/exam';
+  import { list,startExam } from '@/api/academic/exam';
   import { findClasses } from '@/api/quality/classes';
 
   export default {
     name: 'exam-scanner',
+    components:{
+      AddEditExam:()=>import("@/views/academic/child/add-edit-exam.vue"),
+      AddEditUpperExam:()=>import("@/views/academic/child/add-edit-upper-exam.vue")
+    },
     data(){
       return {
         loading:true,
@@ -52,8 +59,13 @@
       };
     },
     methods:{
-      openWindow(){
-
+      openWindow(name,data){
+        this.$refs[name].examObject = {};
+        this.$refs[name].value = true;
+      },
+      openUpperWindow(name,data){
+        this.$refs[name].upperExamObject = {};
+        this.$refs[name].value = true;
       },
       getExamList(data){
         list(this.params).then(res=>{
@@ -63,7 +75,20 @@
         });
       },
       startExam(data){
-
+        this.$Modal.confirm({
+          title:'友情提示',
+          content:`确定要开启【${data.examName}】考试吗`,
+          onOk:()=>{
+            startExam(data).then(res=>{
+              if(res.data.code == 10000){
+                this.$Message.success(res.data.message);
+              }else{
+                this.$Message.error(res.data.message);
+              }
+              this.getExamList(this.params);
+            })
+          }
+        })
       }
     },
     computed:{
