@@ -6,7 +6,15 @@ export const list = data => {
     data:data,
     method:'post'
   });
-}
+};
+
+export const upperList = data => {
+  return axios.request({
+    url:'question/upperList',
+    data:data,
+    method:'post'
+  });
+};
 
 export const save = data =>{
   return axios.request({
@@ -53,5 +61,4 @@ export const count = data => {
     method:'get'
   });
 }
-
 

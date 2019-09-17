@@ -3,7 +3,7 @@
     <Card :bordered="false" :dis-hover="true" style="height: 50px;">
 
       <Select clearable v-model="params.classesId" style="width: 150px;margin-right: 5px;float: left" placeholder="请选择班级">
-        <Option :value="item.id" v-for="item in classesArray">{{item.className}}</Option>
+        <Option :value="item.id" :key="item.id" v-for="item in classesArray">{{item.className}}</Option>
       </Select>
 
       <Input v-model="params.examName" style="width: 150px;margin-right: 5px;float: left" placeholder="请输入试卷名称" />
@@ -24,15 +24,13 @@
       <Button type="info" @click="getExamList(params)" style="width: 150px;margin-right: 5px;float: left">查询数据</Button>
       <Button type="info" @click="params = {page:1,size:10},getExamList(params)" style="width: 150px;margin-right: 5px;float: left">重置查询</Button>
 
-      <Button type="primary" @click="openWindow('addEditExam',null)" style="width: 150px;margin-right: 5px;float: right">新增试卷(选择/问答)</Button>
-      <Button type="primary" @click="openUpperWindow('addEditUpperExam',null)" style="width: 150px;margin-right: 5px;float: right">新增试卷(上机)</Button>
+      <Button type="primary" @click="openWindow('addEditExam',null)" style="width: 150px;margin-right: 5px;float: right">新增试卷</Button>
     </Card>
     <Card :bordered="false" :dis-hover="true">
       <self-table :list="getExamList" :data="examArray" :columns="columns" :loading="loading" :params="params"></self-table>
     </Card>
 
     <add-edit-exam ref="addEditExam"></add-edit-exam>
-    <add-edit-upper-exam ref="addEditUpperExam"></add-edit-upper-exam>
   </div>
 </template>
 
@@ -45,8 +43,7 @@
   export default {
     name: 'exam-scanner',
     components:{
-      AddEditExam:()=>import("@/views/academic/child/add-edit-exam.vue"),
-      AddEditUpperExam:()=>import("@/views/academic/child/add-edit-upper-exam.vue")
+      AddEditExam:()=>import("@/views/academic/child/add-edit-exam.vue")
     },
     data(){
       return {
@@ -61,10 +58,6 @@
     methods:{
       openWindow(name,data){
         this.$refs[name].examObject = {};
-        this.$refs[name].value = true;
-      },
-      openUpperWindow(name,data){
-        this.$refs[name].upperExamObject = {};
         this.$refs[name].value = true;
       },
       getExamList(data){

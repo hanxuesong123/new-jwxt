@@ -44,6 +44,7 @@
           <Checkbox label="1">单选题</Checkbox>
           <Checkbox label="2">多选题</Checkbox>
           <Checkbox label="3">问答题</Checkbox>
+          <Checkbox label="4">上机题</Checkbox>
         </CheckboxGroup>
       </FormItem>
 
@@ -52,6 +53,7 @@
           <span style="color:red">{{count.single}}</span> 道单选题,
           <span style="color:red">{{count.mutiple}}</span> 道多选题,
           <span style="color:red">{{count.ask}}</span> 道问答题,
+          <span style="color:red">{{count.upper}}</span> 道上机题
         </template>
       </Alert>
       <FormItem :style="{display:hidden.single}" prop="singleCount" label="单选数量">
@@ -65,7 +67,7 @@
       <FormItem :style="{display:hidden.mutiple}"  prop="mutipleCount" label="多选数量">
         <Input type="text" placeholder="请输入多选题数量" v-model="examObject.mutipleCount"/>
       </FormItem>
-      <FormItem :style="{display:hidden.mutiple}"  prop="mutipleScore" label="单题分数">
+      <FormItem :style="{display:hidden.mutiple}"  prop="mutipleScore" label="多选分数">
         <Input type="text" placeholder="请输入多选题每题分数" v-model="examObject.mutipleScore"/>
       </FormItem>
 
@@ -73,8 +75,16 @@
       <FormItem :style="{display:hidden.ask}"  prop="askCount" label="问答数量">
         <Input type="text" placeholder="请输入问答题数量" v-model="examObject.askCount"/>
       </FormItem>
-      <FormItem :style="{display:hidden.ask}"  prop="askScore" label="单题分数">
+      <FormItem :style="{display:hidden.ask}"  prop="askScore" label="问答分数">
         <Input type="text" placeholder="请输入问答题每题分数" v-model="examObject.askScore"/>
+      </FormItem>
+
+
+      <FormItem :style="{display:hidden.upper}"  prop="upperCount" label="上机题数量">
+        <Input type="text" placeholder="请输入上机题数量" v-model="examObject.upperCount"/>
+      </FormItem>
+      <FormItem :style="{display:hidden.upper}"  prop="upperScore" label="上机题分数">
+        <Input type="text" placeholder="请输入上机题每题分数" v-model="examObject.upperScore"/>
       </FormItem>
 
     </Form>
@@ -107,11 +117,13 @@
           single:0,
           mutiple:0,
           ask:0,
+          upper:0
         },
         hidden:{
           single:'none',
           mutiple:'none',
           ask:'none',
+          upper:'none',
           message:'none'
         }
       };
@@ -132,15 +144,22 @@
           });
           let ids = arr.join(',');
           count(ids).then(res=>{
-            let {singleCount,mutipleCount,askCount} = res.data.data;
+            let {singleCount,mutipleCount,askCount,upperCount} = res.data.data;
             this.count.single = singleCount;
             this.count.mutiple = mutipleCount;
             this.count.ask = askCount;
+            this.count.upper = upperCount;
           });
 
         }
       },
       'examObject.questionTypeIdsArray'(value){
+
+        if(value.length != 1 && value.includes("4")){
+          this.$Message.error("上机题需要独立出题");
+          return false;
+        }
+
         if(value && value.length > 0){
           if(value.includes('1')){
             this.hidden.single='block';
@@ -163,10 +182,18 @@
             this.hidden.ask='none';
           }
 
+          if(value.includes('4')){
+            this.hidden.message='block';
+            this.hidden.upper='block';
+          } else{
+            this.hidden.upper='none';
+          }
+
         }else if(value && value.length == 0){
           this.hidden.single='none';
           this.hidden.mutiple='none';
           this.hidden.ask='none';
+          this.hidden.upper='none';
           this.hidden.message='none';
         }
       }
@@ -179,7 +206,7 @@
         this.hidden.single='none';
         this.hidden.mutiple='none';
         this.hidden.ask='none';
-        //this.hidden.upper='none';
+        this.hidden.upper='none';
         this.count={ single:0, mutiple:0, ask:0};
         this.examObject = {};
         this.classArray = [];
@@ -199,89 +226,38 @@
             let askCount = this.examObject.askCount  || 0;
             let askScore = this.examObject.askScore  || 0;
 
-            let total = singleCount * singleScore + mutipleCount * mutipleScore + askCount * askScore; //+ upperCount * upperScore;
+            let upperCount = this.examObject.upperCount  || 0;
+            let upperScore = this.examObject.upperScore || 0;
+
+
+            let total = singleCount * singleScore + mutipleCount * mutipleScore + askCount * askScore + upperCount * upperScore;
 
             let questionTypes = this.examObject.questionTypeIdsArray;
 
-            if(!questionTypes || questionTypes.length == 0){
-              this.$Message.error("请选择试题类型");
+            if(questionTypes.length > 1 && questionTypes.includes("4")){
+              this.$Message.error("不能发布,上机题需要独立出题");
               return false;
             }
 
-
-            if(this.examObject.examName && this.examObject.examName.trim().length > 10){
-              this.$Message.error("请考试名称应小于10个字符");
-              return false;
-            }
-
-
-            if(!this.examObject.examTime){
-              this.$Message.error("请选择考试时间");
-              return false;
-            }
-
-
-            if(!this.examObject.examTimeLength){
-              this.$Message.error("请输入考试时长");
-              return false;
-            }
-
-
-            if(!this.examObject.classId || this.examObject.classId.length == 0){
-              this.$Message.error("请选择考试班级");
-              return false;
-            }
-
-
-            if(!this.examObject.chapterIdsArray || this.examObject.chapterIdsArray.length == 0){
-              this.$Message.error("请选择所考课程");
-              return false;
-            }
-
-            if(!this.examObject.examType || this.examObject.examType.length == 0){
-              this.$Message.error("请选择试卷类型");
-              return false;
-            }
-
+            if(!questionTypes || questionTypes.length == 0){this.$Message.error("请选择试题类型");return false;}
+            if(this.examObject.examName && this.examObject.examName.trim().length > 10){this.$Message.error("请考试名称应小于10个字符");return false;}
+            if(!this.examObject.examTime){this.$Message.error("请选择考试时间");return false;}
+            if(!this.examObject.examTimeLength){this.$Message.error("请输入考试时长");return false;}
+            if(!this.examObject.classId || this.examObject.classId.length == 0){this.$Message.error("请选择考试班级");return false;}
+            if(!this.examObject.chapterIdsArray || this.examObject.chapterIdsArray.length == 0){this.$Message.error("请选择所考课程");return false;}
+            if(!this.examObject.examType || this.examObject.examType.length == 0){this.$Message.error("请选择试卷类型");return false;}
 
             let type = questionTypes.join(",");
 
-
-            if(total != 100){
-              this.$Message.error("总分必须是100分");
-              return false;
-            }
-
-            if(type.includes("1") && singleScore * singleScore == 0){
-              this.$Message.error("单选题得分不能为0");
-              return false;
-            }
-
-            if(type.includes("1") &&  singleCount > this.count.single){
-              this.$Message.error("单选题数量过多");
-              return false;
-            }
-
-            if(type.includes("2") && mutipleCount > this.count.mutiple){
-              this.$Message.error("多选题数量过多");
-              return false;
-            }
-
-            if(type.includes("2") && mutipleScore * mutipleCount == 0){
-              this.$Message.error("多选题得分不能为0");
-              return false;
-            }
+            if(total != 100){this.$Message.error("总分必须是100分");return false;}
+            if(type.includes("1") && singleScore * singleScore == 0){this.$Message.error("单选题得分不能为0");return false;}
+            if(type.includes("1") &&  singleCount > this.count.single){this.$Message.error("单选题数量过多");return false;}
+            if(type.includes("2") && mutipleCount > this.count.mutiple){this.$Message.error("多选题数量过多");return false;}
+            if(type.includes("2") && mutipleScore * mutipleCount == 0){this.$Message.error("多选题得分不能为0");return false;}
+            if(type.includes("3") && askCount > this.count.ask){this.$Message.error("问答题数量过多");return false;}
+            if(type.includes("3") && askCount * askScore == 0){this.$Message.error("问答题得分不能为0");return false;}
 
 
-            if(type.includes("3") && askCount > this.count.ask){
-              this.$Message.error("问答题数量过多");
-              return false;
-            }
-
-            if(type.includes("3") && askCount * askScore == 0){
-              this.$Message.error("问答题得分不能为0");
-              return false;
-            }
 
             saveOrUpdate(this.examObject).then(res=>{
               if(res.data.code == 10000){
@@ -302,7 +278,7 @@
       this.hidden.single='none';
       this.hidden.mutiple='none';
       this.hidden.ask='none';
-      //this.hidden.upper='none';
+      this.hidden.upper='none';
       this.hidden.message='none';
       this.count = {single:0,mutiple:0,ask:0,upper:0};
     }

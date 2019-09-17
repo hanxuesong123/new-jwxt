@@ -262,5 +262,29 @@ export default [
         }
       }
     ]
+  },
+    //学生专栏
+  {
+    path:'/stu_info',
+    name:'stu_info',
+    component:Main,
+    meta:{
+      title:'我的学习',
+      icon:'',
+      hideInMenu:false,
+      parentName:'student'
+    },
+    children:[
+      {
+        path:'student_exam',
+        name:'student_exam',
+        component:()=>import("@/views/student/exam/index.vue"),
+        meta:{
+          title:'考试管理',
+          icon:'',
+          hideInMenu:false
+        }
+      }
+    ]
   }
 ]
