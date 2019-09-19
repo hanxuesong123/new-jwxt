@@ -14,19 +14,19 @@ class HttpRequest {
 
 
   //配置config
-  getInSideConfig(){
-    const config = {
-      baseURL:this.baseUrl,
-      params:{ //请求时,携带的额外参数
-        "token": getToken()
-      },
-      timeout:20000,
-      /*headers:{
-        token:getToken()
-      }*/
-    };
-    return config;
-  }
+    getInSideConfig(){
+        const config = {
+            baseURL:this.baseUrl,
+            params:{ //请求时,携带的额外参数
+                "token": getToken()
+            },
+            timeout:20000,
+            /*headers:{
+              token:getToken()
+            }*/
+        };
+        return config;
+    }
 
   //配置拦截
   interceptors(instance,url){ //instance是axios的实例, url是请求的地址

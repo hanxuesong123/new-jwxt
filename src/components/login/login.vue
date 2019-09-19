@@ -1,6 +1,12 @@
 <template>
   <div class="login">
     <Card  class="card" icon="log-in" title="欢迎登陆" :bordered="false">
+
+      <template slot="title">
+        <img src="../../assets/image/logo.png" width="200px" height="50px"><br>
+        <h4 style="margin-top: 5px">石家庄北大青鸟互联网教育集团欢迎您</h4>
+      </template>
+
       <Form ref="loginForm" :model="form" :rules="rules" @keydown.enter.native="handleSubmit('loginForm')">
         <FormItem prop="username">
           <Input v-model="form.username" placeholder="请输入用户名" >
@@ -61,9 +67,9 @@
       handleSubmit(name){
         this.$refs[name].validate(valid=>{
           if(valid){
-            this.handleLogin(this.form).then(res=>{
-              this.getUserInfo().then(res=>{
-                this.$router.push({
+            this.handleLogin(this.form).then(res=>{  //如果执行成功则设置token(store/user.js)
+              this.getUserInfo().then(res=>{  //如果查询用户信息成功 则设置access(store/user.js)
+                this.$router.push({ //开始路由跳转到首页
                   name : this.$config.homeName
                 });
               })
@@ -86,10 +92,13 @@
 </script>
 
 <style scoped>
+  .login-title{
+
+  }
   .login{
     width: 100%;
     height: 100vh;
-    background-image: url("../../assets/image/bg01.jpg");
+    background-image: url("../../assets/image/nbg02.jpg");
     padding: 10px 10px 10px 10px;
     background-size: cover;
     background-position: center;

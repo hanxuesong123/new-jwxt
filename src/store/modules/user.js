@@ -56,10 +56,10 @@ const actions = { //向外暴露的接口
 
 const getters = {};
 
-
 export default {
-  state,
-  actions,
-  getters,
-  mutations
+    state,
+    actions,
+    getters,
+    mutations
 };
+

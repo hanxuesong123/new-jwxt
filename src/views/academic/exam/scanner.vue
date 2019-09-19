@@ -31,6 +31,7 @@
     </Card>
 
     <add-edit-exam ref="addEditExam"></add-edit-exam>
+    <show-exam ref="showExam"></show-exam>
   </div>
 </template>
 
@@ -43,7 +44,8 @@
   export default {
     name: 'exam-scanner',
     components:{
-      AddEditExam:()=>import("@/views/academic/child/add-edit-exam.vue")
+      AddEditExam:()=>import("@/views/academic/child/add-edit-exam.vue"),
+      ShowExam:()=>import("@/views/academic/child/show-exam.vue")
     },
     data(){
       return {
@@ -82,6 +84,10 @@
             })
           }
         })
+      },
+      showExam(name,data){
+        this.$refs[name].examData = data;
+        this.$refs[name].value = true;
       }
     },
     computed:{
@@ -108,18 +114,23 @@
               return h('Tag',{props:{color:params.row.examStatus == '1' ? 'pink' : (params.row.examStatus == '2' ? 'error' : (params.row.examStatus == '3' ? 'warning' : 'info'))}},
                   params.row.examStatus == '1' ? '未开始' : (params.row.examStatus == '2' ? '进行中' : (params.row.examStatus == '3' ? '批阅中' : '已结束')));
             }},
-          {key:'opt',title:'操作',align:'center',render(h,params){
+          {key:'opt',title:'操作',align:'center',width:'400px',render(h,params){
               return h('span',[
-                h('Button',{props:{type:'primary',icon:'md-bulb',size:'small',disabled: params.row.examStatus == 1 ? false : true },on:{click(){
+                h('Button',{props:{type:'primary',icon:'md-bulb',size:'small',disabled: params.row.examStatus == 1 ? false : true },style:{marginRight:'5px'},on:{click(){
                       that.startExam(params.row);
-                    }}},'开始考试')
+                    }}},'开始考试'),
+                h('Button',{props:{type:'primary',icon:'ios-eye',size:'small',disabled: params.row.examStatus != 1 ? false : true},style:{marginRight:'5px'},on:{click(){
+                  that.showExam('showExam',params.row);
+                    }}},'已交/未交'),
+               /* h('Button',{props:{type:'primary',icon:'ios-eye',size:'small',disabled: params.row.examStatus == 2 ? false : true},style:{marginRight:'5px'},on:{click(){
+                  that.showExam('showExam',params.row);
+                    }}},'停止考试')*/
               ],'');
             }}
         ];
       }
     },
     created(){
-
       findClasses().then(res=>this.classesArray = res.data.data);
 
       this.getExamList(this.params);

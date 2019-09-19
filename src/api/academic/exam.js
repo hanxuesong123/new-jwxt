@@ -33,4 +33,12 @@ export const startExam = data =>{
     method:'get',
     data:null
   });
-}
+};
+
+export const showExam = data =>{
+  return axios.request({
+    url:`exam/showExam`,
+    method:'post',
+    data:data
+  });
+};

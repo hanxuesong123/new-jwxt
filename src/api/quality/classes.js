@@ -32,7 +32,6 @@ export const updateClasses = data => {
   });
 };
 
-
 export const saveOrUpdate = data => {
   return data.id ? updateClasses(data) : saveClasses(data);
 };

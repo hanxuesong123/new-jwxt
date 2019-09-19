@@ -239,7 +239,7 @@ export default [
       }
     ]
   },
-    // 教质部门
+    // 教质部门  当前用户this.$store.state.user.access.roles.menus只有 classes_management,classes_scanner
   {
     path:'/classes_management',
     name:'classes_management',
@@ -257,6 +257,29 @@ export default [
         component:()=>import("@/views/quality/classes/scanner.vue"),
         meta:{
           title:'班级录入',
+          icon:'',
+          hideInMenu:false
+        }
+      }
+    ]
+  },
+  {
+    path:'/student_management',
+    name:'student_management',
+    component:Main,
+    meta:{
+      title:'学员管理',
+      icon:'',
+      hideInMenu:false,
+      parentName:'quality'
+    },
+    children:[
+      {
+        path:'student_scanner',
+        name:'student_scanner',
+        component:()=>import("@/views/quality/student/index.vue"),
+        meta:{
+          title:'学员录入',
           icon:'',
           hideInMenu:false
         }

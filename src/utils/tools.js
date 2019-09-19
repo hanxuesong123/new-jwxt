@@ -70,3 +70,13 @@ export const handleQueryDataUtil = (queryName,srcArr) =>{  //工具类： 处理
   });
   return arr;
 };
+
+
+export const splice = arr => {
+  for(let i = 0 ; i < arr.length ; i ++){
+    if(arr[i] == "5"){
+      arr.splice(i,1);
+    }
+  }
+  return arr;
+};
