@@ -25,7 +25,7 @@ export const list = data =>{
     method:'post',
     data:data
   });
-}
+};
 
 export const startExam = data =>{
   return axios.request({
@@ -40,5 +40,45 @@ export const showExam = data =>{
     url:`exam/showExam`,
     method:'post',
     data:data
+  });
+};
+
+export const stopExam = data =>{
+  return axios.request({
+    url:`exam/stopExam`,
+    method:'post',
+    data:data
+  });
+};
+
+export const readStudentAsks = data =>{
+  return axios.request({
+    url:`exam/readStudentAsks/${data}`,
+    method:'get',
+    data:null
+  });
+};
+
+export const lastExam = data =>{  //给问答题评分
+  return axios.request({
+    url:'exam/lastExam',
+    method:'put',
+    data:data
+  });
+};
+
+export const endExam = data =>{
+  return axios.request({
+    url:`exam/endExam`,
+    method:'post',
+    data:data
+  });
+};
+
+export const analysisExam = data =>{
+  return axios.request({
+    url:`exam/analysisExam/${data}`,
+    method:'get',
+    data:null
   });
 };

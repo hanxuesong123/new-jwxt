@@ -123,11 +123,12 @@
 </template>
 <script>
 
-    import { getQuestionExamList,saveExam } from "@/api/student/exam";
+    import { getQuestionExamList,saveExam,getExamStatus } from "@/api/student/exam";
     import { splice } from "@/utils/tools";
 
     export default {
-        name:'show-exam',
+        name:'show-student-exam',
+        props:['parent'],
         data(){
             return {
                 loading:true,
@@ -138,6 +139,7 @@
                 singleAsk:[], //学生单选题情况
                 mutipleAsk:[],//学生多选题情况
                 askAsk:[], //学生简答题情况
+                timer:'',//定时器
             }
         },
         computed:{
@@ -150,14 +152,22 @@
         },
         watch:{
             value(data){
-                console.log(this.examData.askCount)
-                console.log(this.examData.askCount && this.examData.mutipleCount > 0)
+                this.timer = setInterval(()=>{
+                    getExamStatus(this.examData.id).then(res=>{
+                        if(res.data.data.examStatus != 2){
+                            //this.value = false;
+                            this.$router.push('/');
+                            this.submitExam();
+                            this.$destroy('show-student-exam');
+                        };
+                    })
+                },1000 * 5);
                 getQuestionExamList(this.examData).then(res=>this.questionArray = res.data.data); //查询当前试卷的所有试题
                 //打开页面后, 所有单选题答案默认为5,没填写就给5 如果填写了就替换5
                 if(this.examData.singleCount && this.examData.singleCount > 0) for(let i = 0 ; i < this.examData.singleCount ; i ++) this.singleAsk.push(5);
                 if(this.examData.mutipleCount && this.examData.mutipleCount > 0) for(let i = 0 ; i < this.examData.mutipleCount; i ++) this.mutipleAsk.push(["5"]);//在提交试卷时,需要判断当前选项的数组长度,如果长度大于1,则把5删掉
                 if(this.examData.askCount && this.examData.askCount > 0) for(let i = 0 ; i < this.examData.askCount ; i ++) this.askAsk.push("暂无任何内容");
-                this.toggleFullScreen();
+                //this.toggleFullScreen();
             },
             singleAsk(data){ //监听单选题选项 如果学生操作单选题,则影响进度条
                 if(data && data.length > 0){
@@ -185,49 +195,39 @@
             singleChange(){ //单选改变时触发
 
             },
+            submitExam(){
+                //处理对选题数据
+                if(this.mutipleAsk && this.mutipleAsk.length > 0){
+                    this.mutipleAsk.forEach(mutipleArray=>{
+                        if(mutipleArray.length > 1){
+                            mutipleArray = splice(mutipleArray);
+                        }
+                    })
+                }
+                saveExam({id:this.examData.id,single:this.singleAsk.join(","),mutiple:this.mutipleAsk.join("@"),ask:this.askAsk.join(",")}).then(res=>{
+                    if(res.data.code === 10000){
+                        this.$Message.success(res.data.message);
+                    }else{
+                        this.$Message.success(res.data.message);
+                    }
+
+                    this.examData = {singleCount:0,mutipleCount:0,askCount:0,questionTypeIds:''}; //当前试卷实例
+                    this.number = {total:0,single:0,mutiple:0,ask:0}; //计算进度条的参数
+                    this.questionArray={singleList:[],mutipleList:[],askList:[]};
+                    this.singleAsk=[]; //学生单选题情况
+                    this.mutipleAsk=[];//学生多选题情况
+                    this.askAsk=[]; //学生简答题情况
+
+                    this.value = false;
+                    this.$parent.getList(this.$parent.params);
+                })
+            },
             handleSubmit(){
                 this.$Modal.confirm({
                     title:'友情提示',
                     content:'你确定要提交试卷吗?',
                     onOk:()=>{
-                        //处理对选题数据
-                        if(this.mutipleAsk && this.mutipleAsk.length > 0){
-                            this.mutipleAsk.forEach(mutipleArray=>{
-                                if(mutipleArray.length > 1){
-                                    mutipleArray = splice(mutipleArray);
-                                }
-                            })
-                        }
-                        //处理问答题数据
-                        if(this.examData.askCount && this.examData.askCount > 0){ //说明试卷中有问答题
-                            this.askAsk.forEach(item=>{
-                                if(item.trim.length == 0){
-                                    this.$Message.error("有问答题没写");
-                                    return false;
-                                }
-                            })
-                        }
-
-
-
-                        saveExam({id:this.examData.id,single:this.singleAsk.join(","),mutiple:this.mutipleAsk.join("@"),ask:this.askAsk.join(",")}).then(res=>{
-                            if(res.data.code === 10000){
-                                this.$Message.success(res.data.message);
-                            }else{
-                                this.$Message.success(res.data.message);
-                            }
-
-                            this.examData = {singleCount:0,mutipleCount:0,askCount:0,questionTypeIds:''}; //当前试卷实例
-                            this.number = {total:0,single:0,mutiple:0,ask:0}; //计算进度条的参数
-                            this.questionArray={singleList:[],mutipleList:[],askList:[]};
-                            this.singleAsk=[]; //学生单选题情况
-                            this.mutipleAsk=[];//学生多选题情况
-                            this.askAsk=[]; //学生简答题情况
-
-                            this.value = false;
-                            this.$parent.getList(this.$parent.params);
-                        })
-
+                        this.submitExam();
                     }
                 })
             },
@@ -251,6 +251,9 @@
                     }
                 }
             }
+        },
+        beforeDestroy() {
+            clearInterval(this.timer);
         }
     }
 </script>

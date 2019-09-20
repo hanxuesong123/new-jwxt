@@ -32,6 +32,8 @@
 
     <add-edit-exam ref="addEditExam"></add-edit-exam>
     <show-exam ref="showExam"></show-exam>
+    <read-exam ref="readExam"></read-exam>
+    <analysis-exam ref="analysisExam"></analysis-exam>
   </div>
 </template>
 
@@ -45,7 +47,9 @@
     name: 'exam-scanner',
     components:{
       AddEditExam:()=>import("@/views/academic/child/add-edit-exam.vue"),
-      ShowExam:()=>import("@/views/academic/child/show-exam.vue")
+      ShowExam:()=>import("@/views/academic/child/show-exam.vue"),
+      ReadExam:()=>import("@/views/academic/child/read-exam.vue"),
+      AnalysisExam:()=>import("@/views/academic/child/analysis-exam.vue")
     },
     data(){
       return {
@@ -88,6 +92,15 @@
       showExam(name,data){
         this.$refs[name].examData = data;
         this.$refs[name].value = true;
+      },
+      readExam(name,data){
+        this.$refs[name].examData = data;
+        this.$refs[name].value = true;
+        this.$refs[name].value1 = true;
+      },
+      analysisExam(name,data){
+        this.$refs[name].examObject = data;
+        this.$refs[name].value = true;
       }
     },
     computed:{
@@ -114,17 +127,23 @@
               return h('Tag',{props:{color:params.row.examStatus == '1' ? 'pink' : (params.row.examStatus == '2' ? 'error' : (params.row.examStatus == '3' ? 'warning' : 'info'))}},
                   params.row.examStatus == '1' ? '未开始' : (params.row.examStatus == '2' ? '进行中' : (params.row.examStatus == '3' ? '批阅中' : '已结束')));
             }},
-          {key:'opt',title:'操作',align:'center',width:'400px',render(h,params){
+          {key:'opt',title:'操作',align:'center',width:'500px',render(h,params){
               return h('span',[
                 h('Button',{props:{type:'primary',icon:'md-bulb',size:'small',disabled: params.row.examStatus == 1 ? false : true },style:{marginRight:'5px'},on:{click(){
                       that.startExam(params.row);
                     }}},'开始考试'),
-                h('Button',{props:{type:'primary',icon:'ios-eye',size:'small',disabled: params.row.examStatus != 1 ? false : true},style:{marginRight:'5px'},on:{click(){
+                h('Button',{props:{type:'primary',icon:'ios-eye',size:'small',disabled: params.row.examStatus == 2 ? false : true},style:{marginRight:'5px'},on:{click(){
                   that.showExam('showExam',params.row);
                     }}},'已交/未交'),
-               /* h('Button',{props:{type:'primary',icon:'ios-eye',size:'small',disabled: params.row.examStatus == 2 ? false : true},style:{marginRight:'5px'},on:{click(){
-                  that.showExam('showExam',params.row);
-                    }}},'停止考试')*/
+                h('Button',{props:{type:'primary',icon:'ios-brush',size:'small',disabled: params.row.examStatus == 3 ? false : true},style:{marginRight:'5px'},on:{click(){
+                  that.readExam('readExam',params.row);
+                    }}},'批阅试卷'),
+                h('Button',{props:{type:'primary',icon:'ios-brush',size:'small',disabled: params.row.examStatus == 4 ? false : true},style:{marginRight:'5px'},on:{click(){
+                  that.analysisExam('analysisExam',params.row);
+                }}},'成绩分析'),
+                h('Button',{props:{type:'primary',icon:'ios-brush',size:'small',disabled: params.row.examStatus == 4 ? false : true},style:{marginRight:'5px'},on:{click(){
+
+                }}},'试卷讲解'),
               ],'');
             }}
         ];

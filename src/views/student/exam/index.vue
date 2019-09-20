@@ -1,14 +1,21 @@
 <template>
     <div>
+
+        <Card>
+            <Tooltip content="刷新">
+                <Button style="margin-left: 10px" type="primary" shape="circle" icon="md-refresh" ghost size="small" @click="getList(params)"></Button>
+            </Tooltip>
+        </Card>
+
         <self-table :data="data" :columns="columns" :list="getList" :params="params" :loading="loading"></self-table>
 
-        <show-exam ref="showExam"></show-exam>
+        <show-exam ref="showExam" :parent="this"></show-exam>
     </div>
 </template>
 
 <script>
 
-    import { getList,getExamStatus } from "@/api/student/exam";
+    import { getList,getScoreStatus } from "@/api/student/exam";
     import { formatDate } from "@/utils/tools";
 
     export default {
@@ -61,8 +68,7 @@
             openExamWindow(data,type,name){
                 switch (type) {
                     case 'start':
-
-                        getExamStatus(data.id).then(res=>{
+                        getScoreStatus(data.id).then(res=>{
                             if(res.data.code === 10000){
                                 this.$refs[name].examData = data;
                                 this.$refs[name].value = true;

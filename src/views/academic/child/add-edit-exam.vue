@@ -153,7 +153,7 @@
 
         }
       },
-      'examObject.questionTypeIdsArray'(value){
+      'examObject.questionTypeIdsArray'(value){//TODO:fasdfdsfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfd
 
         if(value.length != 1 && value.includes("4")){
           this.$Message.error("上机题需要独立出题");

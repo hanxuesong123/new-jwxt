@@ -109,7 +109,6 @@
         });
       },
       saveWindow(name,data){ //添加课程
-        console.log(data);
         this.$refs[name].generalObject = {};
         if(data.id){
           this.$refs[name].generalObject = data;
