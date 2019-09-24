@@ -20,7 +20,7 @@ class HttpRequest {
             params:{ //请求时,携带的额外参数
                 "token": getToken()
             },
-            timeout:20000,
+            timeout:200000,
             /*headers:{
               token:getToken()
             }*/

@@ -10,6 +10,9 @@
     export default {
         name: "echarts-index",
         props:{
+            parent:{
+                type:Object
+            },
             xData:{
                 type:Array,
                 default:[]

@@ -1,7 +1,7 @@
 <template>
   <div>
     <Drawer v-model="value" :closable="false" width="800px">
-      <Form :model="classesObject" :rules="rules" :label-width="80">
+      <Form ref="form" :model="classesObject" :rules="rules" :label-width="80">
         <FormItem prop="className" label="班级名称">
           <Input v-model="classesObject.className" placeholder="请输入班级名称"/>
         </FormItem>
@@ -36,10 +36,54 @@
   import { findGeneralByCode } from '@/api/other/general';
   import { saveOrUpdate } from '@/api/quality/classes';
   import { findTeachers } from '@/api/permission/user';
+  import  { isEmpty,checkbox,length }  from '@/utils/validate'
+
 
   export default {
     name: 'add-edit-classes',
-
+    props:{
+      classNameRules :{
+        type:Array,
+        default:()=>{
+          return [
+            {required:true,message:'必填项',trigger:'blur'},
+            {max:15,min:3,message:'3-15个字符之间',trigger:'blur'}
+          ]
+        }
+      },
+      generalIdRules:{
+        type:Array,
+        default:()=>{
+          return [
+            {required:true,message:'必填项',trigger:"change"}
+          ]
+        }
+      },
+      startTimeRules:{
+        type:Array,
+        default:()=>{
+          return [
+            {required:true,message:'必填项',trigger:"change",type:'date'}
+          ]
+        }
+      },
+      endTimeRules:{
+        type:Array,
+        default:()=>{
+          return [
+            {required:true,message:'必填项',trigger:"change",type:'date'}
+          ]
+        }
+      },
+      teacherIdsRules:{
+        type:Array,
+        default:()=>{
+          return [
+            {validator: checkbox,trigger:'change'}
+          ]
+        }
+      }
+    },
     data(){
       return {
         value:false,
@@ -51,7 +95,11 @@
     computed:{
       rules(){
         return {
-
+          className : this.classNameRules,
+          generalId : this.generalIdRules,
+          startTime : this.startTimeRules,
+          endTime   : this.endTimeRules,
+          teacherIds : this.teacherIdsRules
         }
       }
     },
@@ -71,15 +119,21 @@
     },
     methods:{
       handleSubmit(name) {
-        saveOrUpdate(this.classesObject).then(res=>{
-          if(res.data.code === 10000){
-            this.$Message.success(res.data.message);
+        this.$refs[name].validate(valid=>{
+          if(valid){
+            saveOrUpdate(this.classesObject).then(res=>{
+              if(res.data.code === 10000){
+                this.$Message.success(res.data.message);
+              }else{
+                this.$Message.success(res.data.message);
+              }
+              this.value = false;
+              this.$parent.getClassesList(this.$parent.params);
+            })
           }else{
-            this.$Message.success(res.data.message);
+            return false;
           }
-          this.value = false;
-          this.$parent.getClassesList(this.$parent.params);
-        })
+        });
       }
     }
   };

@@ -5,6 +5,9 @@ import store from '@/store'
   return store.state.user.access.roles.points.join(",").includes(code) ? true : false;
 };
 
+const has_api_permission = code =>{
+    return store.state.user.access.roles.apis.join(",").includes(code) ? true : false;
+}
 
 /*const toggleFullScreen = () => {
     if (!document.fullscreenElement &&
@@ -28,5 +31,5 @@ import store from '@/store'
 };*/
 
 export default {
-  has_permission
+  has_permission,has_api_permission
 };

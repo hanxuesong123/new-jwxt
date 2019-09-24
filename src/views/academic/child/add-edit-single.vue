@@ -5,7 +5,7 @@
         <Input type="textarea" placeholder="请输入单选题题干" v-model="singleObject.singleContent"  />
       </FormItem>
 
-      <FormItem prop="singleOptionA" label="选项A" style="width: 600px">
+      <FormItem prop="singleOptionA" label="选项A" style="width: 600px" >
         <Input type="text" placeholder="请输入选项A的内容" v-model="singleObject.singleOptionA"/>
       </FormItem>
 
@@ -13,7 +13,7 @@
         <Input type="text" placeholder="请输入选项B的内容" v-model="singleObject.singleOptionB"/>
       </FormItem>
 
-      <FormItem prop="singleOptionC" label="选项C" style="width: 600px">
+      <FormItem prop="singleOptionC" label="选项C" style="width: 600px" >
         <Input type="text" placeholder="请输入选项C的内容" v-model="singleObject.singleOptionC"/>
       </FormItem>
 
@@ -34,6 +34,7 @@
 </template>
 
 <script>
+
   export default {
     name: 'add-edit-single',
     props:['parent'],

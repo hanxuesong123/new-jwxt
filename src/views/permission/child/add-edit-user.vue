@@ -27,7 +27,7 @@
           <Input type="text" placeholder="请输入身份证" v-model="teacherObject.idCard" />
         </FormItem>
         <FormItem prop="birthday" label="生日">
-          <DatePicker type="date" v-model="teacherObject.birthday" placeholder="请选择生日" style="width: 162px;"></DatePicker>
+          <DatePicker type="date"  show-week-numbers :editable="false" v-model="teacherObject.birthday" placeholder="请选择生日" style="width: 162px;"></DatePicker>
         </FormItem>
         <FormItem prop="education" label="学历" placeholder="请选择学历" >
           <Select v-model="teacherObject.education" style="width: 162px;">
@@ -109,21 +109,235 @@
 </template>
 
 <script>
-
+  import { only_chinese,validate_telephone,validate_email,validate_id_card,isOneToNinetyNine,isInteger } from "@/utils/validate/commons/commons_validate";
   import { findDepartments } from '@/api/other/department.js';
   import { findGeneralByCode } from '@/api/other/general.js';
   import { saveOrUpdate } from '@/api/permission/user.js';
 
   export default {
     name: 'add_edit_teacher',
+    props:{
+      nickNameRules:{
+        type:Array,
+        default:()=>{
+          return [
+            {validator:only_chinese,trigger:'blur'}
+          ]
+        }
+      },
+      telephoneRules:{
+        type:Array,
+        default:()=>{
+          return [
+            {validator: validate_telephone,trigger: "blur"}
+          ]
+        }
+      },
+      emailRules:{
+        type:Array,
+        default:()=>{
+          return [
+            {validator: validate_email,trigger: "blur"}
+          ]
+        }
+      },
+      sexRules:{
+        type:Array,
+        default:()=>{
+          return [
+            {required:true,message:'必选项',trigger: "change"}
+          ]
+        }
+      },
+      residenceAddressRules:{
+        type:Array,
+        default:()=>{
+          return [
+            {required:true,message:'必输项',trigger: "blur"}
+          ]
+        }
+      },
+      nowAddressRules:{
+        type:Array,
+        default:()=>{
+          return [
+            {required:true,message:'必输项',trigger: "blur"}
+          ]
+        }
+      },
+      idCardRules:{
+        type:Array,
+        default:()=>{
+          return [
+            {validator:validate_id_card,trigger: "blur"}
+          ]
+        }
+      },
+      birthdayRules:{
+        type:Array,
+        default:()=>{
+          return [
+            {required:true,message:'必选项',trigger: "change",type:'date'}
+          ]
+        }
+      },
+      educationRules:{
+        type:Array,
+        default:()=>{
+          return [
+            {required:true,message:'必选项',trigger: "change"}
+          ]
+        }
+      },
+      graduationSchoolRules:{
+        type:Array,
+        default:()=>{
+          return [
+            {required:true,message:'必输项',trigger: "blur"}
+          ]
+        }
+      },
+      majorRules:{
+        type:Array,
+        default:()=>{
+          return [
+            {required:true,message:'必选项',trigger: "change"}
+          ]
+        }
+      },
+      emergencyContactRules:{
+        type:Array,
+        default:()=>{
+          return [
+            {required:true,message:'必输项',trigger: "blur"}
+          ]
+        }
+      },
+      relationRules:{
+        type:Array,
+        default:()=>{
+          return [
+            {required:true,message:'必输项',trigger: "blur"}
+          ]
+        }
+      },
+      deptIdRules:{
+        type:Array,
+        default:()=>{
+          return [
+            {required:true,message:'必选项',trigger: "change"}
+          ]
+        }
+      },
+      jobTitleRules:{
+        type:Array,
+        default:()=>{
+          return [
+            {required:true,message:'必选项',trigger: "change"}
+          ]
+        }
+      },
+      entryTimeRules:{
+        type:Array,
+        default:()=>{
+          return [
+            {required:true,message:'必选项',trigger: "change",type:'date'}
+          ]
+        }
+      },
+      hasMemberRules:{
+        type:Array,
+        default:()=>{
+          return [
+            {required:true,message:'必选项',trigger: "change"}
+          ]
+        }
+      },
+      hasLeaveRules:{
+        type:Array,
+        default:()=>{
+          return [
+            {required:true,message:'必选项',trigger: "change"}
+          ]
+        }
+      },
+      jobNumberRules:{
+        type:Array,
+        default:()=>{
+          return [
+            {validator:isOneToNinetyNine,trigger:'blur'}
+          ]
+        }
+      },
+      laborContractRules:{
+        type:Array,
+        default:()=>{
+          return [
+            {required:true,message:'必选项',trigger: "change"}
+          ]
+        }
+      },
+      contractTimeRules:{
+        type:Array,
+        default:()=>{
+          return [
+            {required:true,message:'必选项',trigger: "change",type:'date'}
+          ]
+        }
+      },
+      hasSocialSecurityRules:{
+        type:Array,
+        default:()=>{
+          return [
+            {required:true,message:'必选项',trigger: "change"}
+          ]
+        }
+      },
+      contractNumberRules:{
+        type:Array,
+        default:()=>{
+          return [
+            {validator:isInteger,trigger:'blur'}
+          ]
+        }
+      }
+    },
     data(){
       return{
         value :false,
         teacherObject:{},
-        rules:{},
         departmentArray:[],
         jobTitleArray:[]//职位名称
       };
+    },
+    computed:{
+      rules(){
+        return {
+          nickName:this.nickNameRules,
+          telephone: this.telephoneRules,
+          email:this.emailRules,
+          sex: this.sexRules,
+          residenceAddress: this.residenceAddressRules,
+          nowAddress : this.nowAddressRules,
+          idCard: this.idCardRules,
+          birthday:this.birthdayRules,
+          education:this.educationRules,
+          graduationSchool:this.graduationSchoolRules,
+          major:this.majorRules,
+          emergencyContact:this.emergencyContactRules,
+          relation:this.relationRules,
+          deptId:this.deptIdRules,
+          jobTitle:this.jobTitleRules,
+          entryTime:this.entryTimeRules,
+          hasMember:this.hasMemberRules,
+          hasLeave:this.hasLeaveRules,
+          jobNumber:this.jobNumberRules,
+          laborContract:this.laborContractRules,
+          contractTime:this.contractTimeRules,
+          hasSocialSecurity:this.hasSocialSecurityRules,
+          contractNumber:this.contractNumberRules
+        }
+      }
     },
     watch:{
       value(value){
@@ -136,15 +350,21 @@
     },
     methods:{
       handleSubmit(name){
-        saveOrUpdate(this.teacherObject).then(res=>{
-          if(res.data.code === 10000){
-            this.$Message.success(res.data.message);
+        this.$refs[name].validate(valid=>{
+          if(valid){
+            saveOrUpdate(this.teacherObject).then(res=>{
+              if(res.data.code === 10000){
+                this.$Message.success(res.data.message);
+              }else{
+                this.$Message.success(res.data.message);
+              }
+              this.value = false;
+              this.$parent.getTeacherList(this.$parent.params);
+            })
           }else{
-            this.$Message.success(res.data.message);
+            return false;
           }
-          this.value = false;
-          this.$parent.getTeacherList(this.$parent.params);
-        })
+        });
       }
     }
   };

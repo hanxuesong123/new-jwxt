@@ -60,13 +60,13 @@
                     <Scroll :height="900">
                         <!--单选题-->
                         <Card v-if="examData.singleCount && examData.singleCount > 0 && questionArray.singleList.length > 0"
-                              style="height: 50px;background-color: #42b983;margin-left: 30px;margin-top: 30px;text-align: center;color: white">
+                              style="height: 50px;background-color: #42b983;margin-left: 30px;margin-top: 30px;text-align: center;color: white"  :bordered="false" :dis-hover="true">
                             <h2>单选题&nbsp;&nbsp;&nbsp;&nbsp;共{{examData.singleCount}}道</h2>
                         </Card>
 
                         <Card v-if="examData.singleCount && examData.singleCount > 0 && questionArray.singleList.length > 0"
                               style="margin-top: 30px;margin-left: 30px" :bordered="false" :dis-hover="true">
-                            <Card v-for="(single,index) in questionArray.singleList" :key="single.id" style="margin-bottom: 50px" :bordered="false">
+                            <Card v-for="(single,index) in questionArray.singleList" :key="single.id" style="margin-bottom: 50px"  :bordered="false" :dis-hover="true">
                                 <template slot="title">
                                     <h3>第{{index + 1}}题:  {{single.singleContent}}</h3>
                                 </template>
@@ -81,13 +81,13 @@
 
                         <!--多选题-->
                         <Card v-if="examData.mutipleCount && examData.mutipleCount > 0 && questionArray.mutipleList.length > 0"
-                              style="height: 50px;background-color: #42b983;margin-left: 30px;margin-top: 30px;text-align: center;color: white">
+                              style="height: 50px;background-color: #42b983;margin-left: 30px;margin-top: 30px;text-align: center;color: white"  :bordered="false" :dis-hover="true">
                             <h2>多选题&nbsp;&nbsp;&nbsp;&nbsp;共{{examData.mutipleCount}}道</h2>
                         </Card>
 
                         <Card v-if="examData.mutipleCount && examData.mutipleCount > 0 && questionArray.mutipleList.length > 0"
                               style="margin-top: 30px;margin-left: 30px" :bordered="false" :dis-hover="true">
-                            <Card v-for="(mutiple,index) in questionArray.mutipleList" :key="mutiple.id" style="margin-bottom: 50px"  :bordered="false">
+                            <Card v-for="(mutiple,index) in questionArray.mutipleList" :key="mutiple.id" style="margin-bottom: 50px"   :bordered="false" :dis-hover="true">
                                 <template slot="title">
                                     <h3>第{{index + 1}}题:  {{mutiple.mutipleContent}}</h3>
                                 </template>
@@ -102,13 +102,13 @@
 
                         <!--问答题-->
                         <Card v-if="examData.askCount && examData.askCount > 0 && questionArray.askList.length > 0"
-                              style="height: 50px;background-color: #42b983;margin-left: 30px;margin-top: 30px;text-align: center;color: white">
+                              style="height: 50px;background-color: #42b983;margin-left: 30px;margin-top: 30px;text-align: center;color: white"  :bordered="false" :dis-hover="true">
                             <h2>问答题&nbsp;&nbsp;&nbsp;&nbsp;共{{examData.askCount}}道</h2>
                         </Card>
 
                         <Card v-if="examData.askCount && examData.askCount > 0 && questionArray.askList.length > 0"
                               style="margin-top: 30px;margin-left: 30px" :bordered="false" :dis-hover="true">
-                            <Card v-for="(ask,index) in questionArray.askList" :key="ask.id" style="margin-bottom: 50px">
+                            <Card v-for="(ask,index) in questionArray.askList" :key="ask.id" style="margin-bottom: 50px" :bordered="false" :dis-hover="true">
                                 <template slot="title">
                                     <h3>第{{index + 1}}题:  {{ask.askContent}}</h3>
                                 </template>

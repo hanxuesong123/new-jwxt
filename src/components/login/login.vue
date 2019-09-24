@@ -1,6 +1,6 @@
 <template>
   <div class="login">
-    <Card  class="card" icon="log-in" title="欢迎登陆" :bordered="false">
+    <Card  style="opacity: 0.6;background-color: #99ccff" class="card" icon="log-in" title="欢迎登陆" :bordered="false">
 
       <template slot="title">
         <img src="../../assets/image/logo.png" width="200px" height="50px"><br>
@@ -9,7 +9,7 @@
 
       <Form ref="loginForm" :model="form" :rules="rules" @keydown.enter.native="handleSubmit('loginForm')">
         <FormItem prop="username">
-          <Input v-model="form.username" placeholder="请输入用户名" >
+          <Input style="opacity: 1" v-model="form.username" placeholder="请输入用户名" >
           <span slot="prepend">
             <Icon :size="16" type="ios-person"></Icon>
           </span>
@@ -98,7 +98,7 @@
   .login{
     width: 100%;
     height: 100vh;
-    background-image: url("../../assets/image/nbg02.jpg");
+    background-image: url("../../assets/image/bg666.jpg");
     padding: 10px 10px 10px 10px;
     background-size: cover;
     background-position: center;

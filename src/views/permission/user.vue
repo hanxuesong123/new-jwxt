@@ -1,10 +1,20 @@
 <template>
   <div>
-    <self-table :params="params" :list="getTeacherList" :data="teacherArray" :columns="teacherColumns" :loading="loading"></self-table>
+
+    <Card>
+      <template slot="title">
+        <span v-if="validate.point.query">
+          <Button style="margin-right: 5px" type="primary" icon="md-refresh" @click="openSearchWindow('searchUser')">条件查询</Button>
+          <Button style="margin-right: 5px" type="primary" icon="md-add" @click="params={page:1,size:10,total:0},getTeacherList(params)">重置查询</Button>
+        </span>
+        <Button :style="{display:validate.point.add ? 'inlineBlock':'none',width: '100px',marginRight: '5px'}" type="primary" icon="md-add" @click="openWindow('addEditUser',null)">添加教师</Button>
+      </template>
+      <self-table :params="params"  :validate="validate.api.list" :list="getTeacherList" :data="teacherArray" :columns="teacherColumns" :loading="loading"></self-table>
+    </Card>
 
     <add-edit-user ref="addEditUser"></add-edit-user>
     <access-role ref="accessRole"></access-role>
-
+    <search-user ref="searchUser" :parent="this"></search-user>
   </div>
 </template>
 
@@ -19,13 +29,24 @@
     name: 'user',
     components:{
       AddEditUser:()=>import("@/views/permission/child/add-edit-user.vue"),
-      AccessRole:()=>import("@/views/permission/child/access-role.vue")
+      AccessRole:()=>import("@/views/permission/child/access-role.vue"),
+      SearchUser:()=>import("@/views/permission/child/search-user.vue")
     },
     data(){
       return{
-        params:{page:1,size:10,total:0},
+        params:{page:1,size:20,total:0},
         loading:true,
-        teacherArray:[]
+        teacherArray:[],
+        validate:{
+          api:{
+            list:this.$access.has_api_permission("API-USER-LIST"),
+          },
+          point:{
+            add:this.$access.has_permission("POINT-USER-ADD"),
+            access:this.$access.has_permission("POINT-ROLE-USER-ACCESS"),
+            query:this.$access.has_permission("POINT-USER-LIST")
+          }
+        }
       }
     },
     computed:{
@@ -48,19 +69,18 @@
             }},
           {key:'opt',title:'操作',align:'center',
             render(h,params){
-              return h('Button',{props:{type:'primary',ghost:true,icon:'md-add',size:'small',disabled:!that.$access.has_permission('POINT-ROLE-USER-ACCESS')},on:{click(){
+              return h('Button',{props:{type:'primary',ghost:true,icon:'md-add',size:'small'},style:{marginRight:'5px',display:that.validate.point.access ? 'inlineBlock':'none' },on:{click(){
                     that.assessRole('accessRole',params.row);
                   }}},'分配角色');
-            },
-            renderHeader(h,params){
-              return h('Button',{props:{type:'error',ghost:true,icon:'md-add',size:'small',disabled:!that.$access.has_permission('POINT-USER-ADD')},on:{click(){
-                    that.openWindow('addEditUser',params.row);
-                  }}},'添加教师');
             }}
         ];
       }
     },
     methods:{
+      openSearchWindow(name){
+        this.params = {page:1,size:20,total:0};
+        this.$refs[name].value = true;
+      },
       assessRole(name,user){
         if(user.status == '2'){
           this.$Message.error("禁用用户无法分配角色");
@@ -87,7 +107,9 @@
       }
     },
     created(){
-      this.getTeacherList(this.params);
+      if(this.validate.api.list){
+        this.getTeacherList(this.params);
+      }
     }
   };
 </script>

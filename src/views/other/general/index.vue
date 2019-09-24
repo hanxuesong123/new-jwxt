@@ -1,6 +1,23 @@
 <template>
   <div>
-    <self-table :params="params" :list="getGeneralList" :loading="loading" :data="generalArray" :columns="columns"></self-table>
+
+    <Card :bordered="false" :dis-hover="true">
+      <template slot="title">
+        <span v-if="validate.point.query">
+          <Input type="text" v-model="params.name" placeholder="请输入名称" style="width: 200px;margin-right: 5px" />
+          <Input type="text" v-model="params.code" placeholder="请输入代码" style="width: 200px;margin-right: 5px" />
+          <Select clearable v-model="params.status" placeholder="请选择状态" style="width: 200px;margin-right: 5px">
+            <Option :value="1">启用</Option>
+            <Option :value="2">禁用</Option>
+          </Select>
+          <Button type="primary"  icon="ios-search" :style="{width: '100px',marginRight: '5px'}" @click="getGeneralList(params)">查询数据</Button>
+          <Button type="primary"  icon="md-refresh" :style="{width: '100px',marginRight: '5px'}" @click="params={page:1,size:20},getGeneralList(params)">重置查询</Button>
+        </span>
+        <Button type="primary"  icon="md-add" :style="{display:validate.point.add ? 'inlineBlock':'none',width: '100px'}"  @click="openWindow('addEditGenreal',null)">新增字典</Button>
+      </template>
+      <self-table :params="params" :validate="validate.api.list" :list="getGeneralList" :loading="loading" :data="generalArray" :columns="columns"></self-table>
+    </Card>
+
     <add-edit-genreal ref="addEditGenreal"></add-edit-genreal>
   </div>
 </template>
@@ -18,7 +35,18 @@
       return {
         loading:true,
         params:{page:1,size:20,total:0},
-        generalArray:[]
+        generalArray:[],
+        validate:{
+          point:{
+            add:this.$access.has_permission('POINT-GENERAL-ADD'),
+            query:this.$access.has_permission('POINT-GENERAL-LIST'),
+            opt:this.$access.has_permission('POINT-GENERAL-OPT'),
+            update:this.$access.has_permission('POINT-GENERAL-UPDATE')
+          },
+          api:{
+            list:this.$access.has_api_permission('API-GENERAL-LIST')
+          }
+        }
       }
     },
     computed:{
@@ -30,18 +58,14 @@
           {key:'code',title:'代码',align:'center'},
           {key:'description',title:'描述',align:'center'},
           {key:'status',title:'启禁',align:'center',render(h,params){
-              return h('Tag',{ props:{color:params.row.status == '1' ? 'success':'error'} },params.row.status == '1' ? '启用':'禁用');
+              return h('Tag',{ props:{color:params.row.status == '1' ? 'primary':'error'} },params.row.status == '1' ? '启用':'禁用');
             }},
-          {key:'opt',title:'操作',align:'center',renderHeader(h,params){
-              return h('Button',{props:{type:'success',size:'small',icon:'md-add',ghost:true,disabled:!that.$access.has_permission('POINT-GENERAL-ADD')},on:{click(){
-                    that.openWindow('addEditGenreal',null);
-                  }}},'添加字典');
-            },render(h,params){
+          {key:'opt',title:'操作',align:'center',render(h,params){
               return h('span',[
-                h('Button',{props:{type:'primary',icon:'ios-hammer',size:'small',ghost:true,disabled:!that.$access.has_permission('POINT-GENERAL-OPT')},style:{marginRight:'5px'},on:{click(){
+                h('Button',{props:{type:'primary',icon:'ios-hammer',size:'small',ghost:true},style:{marginRight:'5px',display:that.validate.point.opt ? 'inlineBlock':'none' },on:{click(){
                       that.opt(params.row)
                     }}},'启禁'),
-                h('Button',{props:{type:'primary',icon:'md-cut',size:'small',ghost:true,disabled:!that.$access.has_permission('POINT-GENERAL-UPDATE')},on:{click(){
+                h('Button',{props:{type:'primary',icon:'md-cut',size:'small',ghost:true},style:{marginRight:'5px',display:that.validate.point.update ? 'inlineBlock':'none' },on:{click(){
                       that.openWindow('addEditGenreal',params.row);
                     }}},'修改')
               ],'');
@@ -84,7 +108,9 @@
       }
     },
     created(){
-      this.getGeneralList(this.params);
+      if(this.validate.api.list){
+        this.getGeneralList(this.params);
+      }
     }
   };
 </script>

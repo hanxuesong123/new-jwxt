@@ -34,6 +34,7 @@
     <show-exam ref="showExam"></show-exam>
     <read-exam ref="readExam"></read-exam>
     <analysis-exam ref="analysisExam"></analysis-exam>
+    <show-object-exam ref="showObjectExam"></show-object-exam>
   </div>
 </template>
 
@@ -49,7 +50,8 @@
       AddEditExam:()=>import("@/views/academic/child/add-edit-exam.vue"),
       ShowExam:()=>import("@/views/academic/child/show-exam.vue"),
       ReadExam:()=>import("@/views/academic/child/read-exam.vue"),
-      AnalysisExam:()=>import("@/views/academic/child/analysis-exam.vue")
+      AnalysisExam:()=>import("@/views/academic/child/analysis-exam.vue"),
+      ShowObjectExam:()=>import("@/components/exam/show-object-exam.vue")
     },
     data(){
       return {
@@ -101,6 +103,10 @@
       analysisExam(name,data){
         this.$refs[name].examObject = data;
         this.$refs[name].value = true;
+      },
+      showObjectExam(name,data){
+        this.$refs[name].examData = data;
+        this.$refs[name].value = true;
       }
     },
     computed:{
@@ -124,7 +130,7 @@
               return h('Tag',{props:{color:params.row.examType == 1? 'warning' : (params.row.examType == 2? 'primary':'error')}},params.row.examType == 1? '日测' : (params.row.examType == 2? '周测':'月考'));
             }},
           {key:'examStatus',title:'试卷状态',align:'center',render(h,params){
-              return h('Tag',{props:{color:params.row.examStatus == '1' ? 'pink' : (params.row.examStatus == '2' ? 'error' : (params.row.examStatus == '3' ? 'warning' : 'info'))}},
+              return h('Tag',{props:{color:params.row.examStatus == '1' ? 'pink' : (params.row.examStatus == '2' ? 'error' : (params.row.examStatus == '3' ? 'warning' : 'primary'))}},
                   params.row.examStatus == '1' ? '未开始' : (params.row.examStatus == '2' ? '进行中' : (params.row.examStatus == '3' ? '批阅中' : '已结束')));
             }},
           {key:'opt',title:'操作',align:'center',width:'500px',render(h,params){
@@ -138,11 +144,11 @@
                 h('Button',{props:{type:'primary',icon:'ios-brush',size:'small',disabled: params.row.examStatus == 3 ? false : true},style:{marginRight:'5px'},on:{click(){
                   that.readExam('readExam',params.row);
                     }}},'批阅试卷'),
-                h('Button',{props:{type:'primary',icon:'ios-brush',size:'small',disabled: params.row.examStatus == 4 ? false : true},style:{marginRight:'5px'},on:{click(){
+                h('Button',{props:{type:'primary',icon:'ios-photos',size:'small',disabled: params.row.examStatus == 4 ? false : true},style:{marginRight:'5px'},on:{click(){
                   that.analysisExam('analysisExam',params.row);
                 }}},'成绩分析'),
-                h('Button',{props:{type:'primary',icon:'ios-brush',size:'small',disabled: params.row.examStatus == 4 ? false : true},style:{marginRight:'5px'},on:{click(){
-
+                h('Button',{props:{type:'primary',icon:'ios-create-outline',size:'small',disabled: params.row.examStatus == 4 ? false : true},style:{marginRight:'5px'},on:{click(){
+                  that.showObjectExam('showObjectExam',params.row);
                 }}},'试卷讲解'),
               ],'');
             }}

@@ -4,7 +4,7 @@
       <Col :span="24">
         <!--顶级菜单-->
         <Card :bordered="false" :dis-hover="true" style="height: 350px;margin: 10px">
-          <self-table :data="permissionArray" :columns="permissionColumns" :params="params" :loading="loading" :list="getPermissionList"></self-table>
+          <self-table :data="permissionArray" :validate="validate.api.list" :columns="permissionColumns" :params="params" :loading="loading" :list="getPermissionList"></self-table>
         </Card>
       </Col>
     </Row>
@@ -14,7 +14,12 @@
       <Card style="height: 550px;margin: 0px 0px 0px 10px;" :bordered="false" :dis-hover="true">
         <template slot="title">子菜单权限列表</template>
         <Scroll :height="480">
-          <Table :data="childArray" :columns="subMenuColumns"></Table>
+          <Table :data="childArray" :columns="subMenuColumns">
+            <template slot="loading">
+              <h1 v-if="validate.api.list">数据正在加载中</h1>
+              <h1 v-else>没有权限访问数据</h1>
+            </template>
+          </Table>
         </Scroll>
       </Card>
       </Col>
@@ -23,7 +28,12 @@
       <Card style="height: 550px;margin: 0px 0px 0px 10px;" :bordered="false" :dis-hover="true">
         <template slot="title">按钮权限列表</template>
         <Scroll :height="480">
-          <Table :data="pointArray" :columns="subPointColumns"></Table>
+          <Table :data="pointArray" :columns="subPointColumns">
+            <template slot="loading">
+              <h1 v-if="validate.api.list">数据正在加载中</h1>
+              <h1 v-else>没有权限访问数据</h1>
+            </template>
+          </Table>
         </Scroll>
       </Card>
       </Col>
@@ -32,7 +42,12 @@
       <Card style="height: 550px;margin: 0px 0px 0px 10px;" :bordered="false" :dis-hover="true">
         <template slot="title">API权限列表</template>
         <Scroll :height="480">
-          <Table :data="apiArray" :columns="subApiColumns"></Table>
+          <Table :data="apiArray" :columns="subApiColumns">
+            <template slot="loading">
+              <h1 v-if="validate.api.list">数据正在加载中</h1>
+              <h1 v-else>没有权限访问数据</h1>
+            </template>
+          </Table>
         </Scroll>
       </Card>
       </Col>
@@ -59,7 +74,17 @@
         pointArray:[],
         apiArray:[],
         params:{page:1,size:5,total:0,type:1,pid:0},
-        styleValue:'none'
+        styleValue:'none',
+        validate:{
+          point:{
+            sub:this.$access.has_permission('POINT-PERMISSION-ALL'),
+            update:this.$access.has_permission('POINT-PERMISSION-UPDATE'),
+            add:this.$access.has_permission('POINT-PERMISSION-ADD')
+          },
+          api:{
+            list:this.$access.has_api_permission("API-PERMISSION-LIST")
+          }
+        }
       }
     },
     computed:{
@@ -71,22 +96,22 @@
             return h('Tooltip',{props:{content:params.row.description,placement:'right'}},params.row.name);
           }},
           {key:'code',title:'权限编码',align:'center',tooltip:true},
-          {title:'操作',align:'center',render(h,params){
+          {title:'操作',align:'center',width:'500px',render(h,params){
               return h('span',[
-                  h('Button',{props:{type:'primary',ghost:true,size:'small',icon:'ios-eye',disabled:!that.$access.has_permission('POINT-PERMISSION-ALL')},style:{marginRight:'5px'},on:{click(){
+                  h('Button',{props:{type:'primary',ghost:true,size:'small',icon:'ios-eye'},style:{marginRight:'5px',display:that.validate.point.sub ? 'inlineBlock':'none' },on:{click(){
                         that.loadChildData(params.row);
                   }}},'查看子类数据'),
-                  h('Button',{props:{type:'primary',ghost:true,size:'small',icon:'md-cut',disabled:!that.$access.has_permission('POINT-PERMISSION-UPDATE')},style:{marginRight:'5px'},on:{click(){
+                  h('Button',{props:{type:'primary',ghost:true,size:'small',icon:'md-cut'},style:{marginRight:'5px',display:that.validate.point.update ? 'inlineBlock':'none'},on:{click(){
                     that.openWindow('addEditPermission',params.row);
                       }}},'修改顶级菜单'),
-                  h('Button',{props:{type:'primary',ghost:true,size:'small',icon:'md-add',disabled:!that.$access.has_permission('POINT-PERMISSION-ADD')},on:{click(){
+                  h('Button',{props:{type:'primary',ghost:true,size:'small',icon:'md-add'},style:{marginRight:'5px',display:that.validate.point.add ? 'inlineBlock':'none'},on:{click(){
                         that.setPid(1,params.row.id);
                         that.openWindow('addEditPermission',null);
                       }}},'添加子级菜单')
               ],'');
             },
             renderHeader(h,params){
-            return h('Button',{props:{type:'error',size:'small',ghost:true,icon:'md-add',disabled:!that.$access.has_permission('POINT-PERMISSION-ADD')},on:{click(){
+            return h('Button',{props:{type:'error',size:'small',ghost:true,icon:'md-add'},style:{marginRight:'5px',display:that.validate.point.add ? 'inlineBlock':'none'},on:{click(){
                   that.setPid(1,0);
                   that.openWindow('addEditPermission',null);
             }}},'添加顶级菜单');
@@ -102,10 +127,10 @@
           {key:'code',title:'权限编码',align:'center',tooltip:true},
           {title:'操作',align:'center',render(h,params){
               return h('span',[
-                h('Button',{props:{type:'primary',ghost:true,size:'small',icon:'md-cut',disabled:!that.$access.has_permission('POINT-PERMISSION-UPDATE')},style:{marginRight:'5px'},on:{click(){
+                h('Button',{props:{type:'primary',ghost:true,size:'small',icon:'md-cut'},style:{marginRight:'5px',display:that.validate.point.update ? 'inlineBlock':'none'},on:{click(){
                       that.openWindow('addEditPermission',params.row);
                     }}},''),
-                h('Button',{props:{type:'primary',ghost:true,size:'small',icon:'md-add',disabled:!that.$access.has_permission('POINT-PERMISSION-ADD')},on:{click(){
+                h('Button',{props:{type:'primary',ghost:true,size:'small',icon:'md-add'},style:{marginRight:'5px',display:that.validate.point.add ? 'inlineBlock':'none'},on:{click(){
                       that.setPid(2,params.row.id);
                       that.openWindow('addEditPermission',null);
                     }}},'')
@@ -122,10 +147,10 @@
           {key:'code',title:'权限编码',align:'center',tooltip:true},
           {title:'操作',align:'center',render(h,params){
               return h('span',[
-                h('Button',{props:{type:'primary',ghost:true,size:'small',icon:'md-cut',disabled:!that.$access.has_permission('POINT-PERMISSION-UPDATE')},style:{marginRight:'5px'},on:{click(){
+                h('Button',{props:{type:'primary',ghost:true,size:'small',icon:'md-cut'},style:{marginRight:'5px',display:that.validate.point.update ? 'inlineBlock':'none'},on:{click(){
                       that.openWindow('addEditPermission',params.row);
                     }}},''),
-                h('Button',{props:{type:'primary',ghost:true,size:'small',icon:'md-add',disabled:!that.$access.has_permission('POINT-PERMISSION-ADD')},on:{click(){
+                h('Button',{props:{type:'primary',ghost:true,size:'small',icon:'md-add'},style:{marginRight:'5px',display:that.validate.point.add ? 'inlineBlock':'none'},on:{click(){
                       that.setPid(3,params.row.id);
                       that.openWindow('addEditPermission',null);
                     }}},'')
@@ -142,7 +167,7 @@
           {key:'code',title:'权限编码',align:'center',tooltip:true},
           {title:'操作',align:'center',render(h,params){
               return h('span',[
-                h('Button',{props:{type:'primary',ghost:true,size:'small',icon:'md-cut',disabled:!that.$access.has_permission('POINT-PERMISSION-UPDATE')},style:{marginRight:'5px'},on:{click(){
+                h('Button',{props:{type:'primary',ghost:true,size:'small',icon:'md-cut'},style:{marginRight:'5px',display:that.validate.point.update ? 'inlineBlock':'none'},on:{click(){
                       that.openWindow('addEditPermission',params.row);
                     }}},'')
               ],'');
@@ -153,7 +178,6 @@
     watch:{
       childArray(data){
         if(data.length > 0){
-
           this.pointArray = [];
           this.apiArray = [];
           data.forEach(subMenu=>{
@@ -167,7 +191,7 @@
                 }
               })
             }
-          })
+          });
 
           this.styleValue = "block"
         }else{
@@ -217,7 +241,9 @@
     },
     created(){
       this.styleValue = 'none'
-      this.getPermissionList(this.params);
+      if(this.validate.api.list){
+        this.getPermissionList(this.params);
+      }
     }
   };
 </script>

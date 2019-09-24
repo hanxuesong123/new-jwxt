@@ -77,8 +77,24 @@ export const endExam = data =>{
 
 export const analysisExam = data =>{
   return axios.request({
-    url:`exam/analysisExam/${data}`,
-    method:'get',
-    data:null
+    url:`exam/analysisExam`,
+    method:'post',
+    data:data
+  });
+};
+
+export const showObjectExam = data =>{
+  return axios.request({
+    url:'exam/showObjectExam',
+    method:'post',
+    data:data
+  });
+};
+
+export const getQuestionExamTeacherList = data =>{
+  return axios.request({
+    url:'exam/getQuestionExamTeacherList',
+    method:'post',
+    data:data
   });
 };

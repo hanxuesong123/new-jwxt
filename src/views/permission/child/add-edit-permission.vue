@@ -23,6 +23,8 @@
 
   import { saveOrUpdate } from '@/api/permission/permission';
 
+  import { validate_text } from "@/utils/validate/commons/commons_validate";
+
   export default {
     name: 'add-edit-permission',
     props:{
@@ -30,7 +32,7 @@
         type:Array,
         default:()=>{
           return [
-            {required:true,message:'必填项',trigger:'blur'}
+            {validator:validate_text,trigger:'blur'}
           ]
         }
       },
@@ -38,7 +40,7 @@
         type:Array,
         default:()=>{
           return [
-            {required:true,message:'必填项',trigger:'blur'}
+            {validator:validate_text,trigger:'blur'}
           ]
         }
       },
@@ -46,7 +48,7 @@
         type:Array,
         default:()=>{
           return [
-            {required:true,message:'必填项',trigger:'blur'}
+            {validator:validate_text,trigger:'blur'}
           ]
         }
       }

@@ -40,3 +40,12 @@ export const saveExam = data =>{
         data:data
     });
 };
+
+
+export const goBackStudentExamData = data =>{
+    return axios.request({
+        url:'student/exam/goBackStudentExamData',
+        method:'post',
+        data:data
+    });
+};

@@ -2,7 +2,7 @@
   <div>
     <Drawer v-model="value" :closable="false" width="600px">
 
-      <Card style="height: 50px;background-color: #2d8cf0;color: white;margin: 10px 0px 10px 0px" :bordered="false" :dis-hover="true">字典信息</Card>
+      <Card style="height: 50px;background-color: #2d8cf0;color: white;margin: 20px 0px 20px 0px" :bordered="false" :dis-hover="true">字典信息</Card>
 
       <Form ref="form" :model="generalObject" :rules="rules" :label-width="80">
         <FormItem prop="name" label="字典名称">

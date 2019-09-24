@@ -2,7 +2,8 @@
   <div>
     <Table :data="data" :columns="columns" size="small" :border="true" :loading="loading">
       <template slot="loading">
-        <h1>数据正在加载中</h1>
+        <h1 v-if="validate">数据正在加载中</h1>
+        <h1 v-else>没有权限访问数据</h1>
       </template>
       <template slot="footer">
         <Page
@@ -21,6 +22,10 @@
   export default {
     name: 'self-table',
     props:{
+      validate:{
+        type:Boolean,
+        default:true
+      },
       data:{
         type:Array,
         default:[]

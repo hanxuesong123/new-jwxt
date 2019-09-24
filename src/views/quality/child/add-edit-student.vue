@@ -62,11 +62,118 @@
 
 <script>
 
+    import { only_chinese,validate_telephone,validate_email,validate_id_card } from "@/utils/validate/commons/commons_validate";
 
     import { saveOrUpdate } from "@/api/quality/student";
 
     export default {
         name: "add-edit-student",
+        props:{
+          nickNameRules:{
+              type:Array,
+              default:()=>{
+                  return [
+                      {validator:only_chinese,trigger:'blur'}
+                  ]
+              }
+          },
+            telephoneRules:{
+              type:Array,
+                default:()=>{
+                    return [
+                        {validator: validate_telephone,trigger: "blur"}
+                    ]
+                }
+            },
+            emailRules:{
+                type:Array,
+                default:()=>{
+                    return [
+                        {validator: validate_email,trigger: "blur"}
+                    ]
+                }
+            },
+            sexRules:{
+                type:Array,
+                default:()=>{
+                    return [
+                        {required:true,message:'必选项',trigger: "change"}
+                    ]
+                }
+            },
+            residenceAddressRules:{
+                type:Array,
+                default:()=>{
+                    return [
+                        {required:true,message:'必输项',trigger: "blur"}
+                    ]
+                }
+            },
+            nowAddressRules:{
+                type:Array,
+                default:()=>{
+                    return [
+                        {required:true,message:'必输项',trigger: "blur"}
+                    ]
+                }
+            },
+            idCardRules:{
+                type:Array,
+                default:()=>{
+                    return [
+                        {validator:validate_id_card,trigger: "blur"}
+                    ]
+                }
+            },
+            birthdayRules:{
+                type:Array,
+                default:()=>{
+                    return [
+                        {required:true,message:'必输项',trigger: "blur",type:'date'}
+                    ]
+                }
+            },
+            educationRules:{
+                type:Array,
+                default:()=>{
+                    return [
+                        {required:true,message:'必输项',trigger: "change"}
+                    ]
+                }
+            },
+            graduationSchoolRules:{
+                type:Array,
+                default:()=>{
+                    return [
+                        {required:true,message:'必输项',trigger: "blur"}
+                    ]
+                }
+            },
+            majorRules:{
+                type:Array,
+                default:()=>{
+                    return [
+                        {required:true,message:'必输项',trigger: "change"}
+                    ]
+                }
+            },
+            emergencyContactRules:{
+                type:Array,
+                default:()=>{
+                    return [
+                        {required:true,message:'必输项',trigger: "blur"}
+                    ]
+                }
+            },
+            relationRules:{
+                type:Array,
+                default:()=>{
+                    return [
+                        {required:true,message:'必输项',trigger: "blur"}
+                    ]
+                }
+            }
+        },
         data(){
             return {
                 value : false,
@@ -76,7 +183,19 @@
         computed:{
             rules(){
                 return {
-
+                    nickName:this.nickNameRules,
+                    telephone: this.telephoneRules,
+                    email:this.emailRules,
+                    sex: this.sexRules,
+                    residenceAddress: this.residenceAddressRules,
+                    nowAddress : this.nowAddressRules,
+                    idCard: this.idCardRules,
+                    birthday:this.birthdayRules,
+                    education:this.educationRules,
+                    graduationSchool:this.graduationSchoolRules,
+                    major:this.majorRules,
+                    emergencyContact:this.emergencyContactRules,
+                    relation:this.relationRules
                 }
             }
         },

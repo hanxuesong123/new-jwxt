@@ -10,6 +10,8 @@
         <self-table :data="data" :columns="columns" :list="getList" :params="params" :loading="loading"></self-table>
 
         <show-exam ref="showExam" :parent="this"></show-exam>
+
+        <show-object-exam ref="showObjectExam"></show-object-exam>
     </div>
 </template>
 
@@ -21,7 +23,8 @@
     export default {
         name: "student-exam-index",
         components:{
-            ShowExam:()=>import("@/views/student/exam/show-exam.vue")
+            ShowExam:()=>import("@/views/student/exam/show-exam.vue"),
+            ShowObjectExam:()=>import("@/components/exam/show-object-exam.vue")
         },
         data(){
             return {
@@ -50,7 +53,7 @@
                             that.openExamWindow(params.row,'start','showExam')
                                 }}},'开始考试'),
                         h('Button',{props:{type:'primary',icon:'ios-eye',ghost:true,size:'small',disabled:params.row.examStatus != '4'},on:{click(){
-                            that.openExamWindow(params.row,'show','showExam')
+                            that.openExamWindow(params.row,'show','showObjectExam')
                                 }}},'查看试卷'),
                     ],'');
                   }}
@@ -80,6 +83,9 @@
 
                         break;
                     case 'show':
+                        this.$refs[name].examData = data;
+                        this.$refs[name].student = true;
+                        this.$refs[name].value = true;
                         break;
                 }
             }
