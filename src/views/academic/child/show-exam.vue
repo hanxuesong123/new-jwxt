@@ -23,7 +23,7 @@
                     <span style="margin-left: 10px">未交({{noHand}}/{{studentArray.length}})</span>
                     <span style="margin-left: 10px">未答题({{noAnswer}}/{{studentArray.length}})</span>
                     <Tooltip content="停止考试">
-                        <Button :disabled="examData.examStatus != 2" style="margin-left: 10px" type="error" shape="circle" icon="ios-hand" ghost size="small" @click="stopExam">停止考试</Button>
+                        <Button :disabled="examData.examStatus != 2" :style="{display:parent.validate.point.stop ? 'inlineBlock' : 'none',marginLeft:'10px'}" type="error" shape="circle" icon="ios-hand" ghost size="small" @click="stopExam">停止考试</Button>
                     </Tooltip>
                 </template>
                 <Scroll :height="500">
@@ -44,6 +44,7 @@
 
     export default {
         name: "show-exam",
+        props:['parent'],
         components:{
             ShowStudentExam:()=>import("@/views/student/exam/show-exam.vue")
         },

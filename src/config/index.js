@@ -3,7 +3,7 @@ export default {
   cookieExpires:1,
   useI18n:true,
   baseUrl:{
-    dev: 'http://localhost:56710/', //http://localhost:56710/    devlepoyment production
+    dev: 'http://localhost:56700/', //http://localhost:56710/    devlepoyment production
     pro: 'https://produce.com'
   },
   homeName:'home',

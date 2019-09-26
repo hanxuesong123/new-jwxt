@@ -41,7 +41,7 @@
         upperObject:{},
         //disabledValue:this.$access.has_permission('POINT-QUESTION-UPLOAD'),
         //btnDisabled:false,
-        url:'http://localhost:56710/question/upload?token='+ getToken()
+        url:'http://localhost:56700/teacher/question/upload?token='+ getToken()
       };
     },
     /*watch:{

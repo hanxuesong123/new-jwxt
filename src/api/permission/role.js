@@ -1,16 +1,19 @@
 import axios from '@/libs/api.request.js'
 
+
+const api = "teacher";
+
 export const list = data => { //分页查询
   return axios.request({
     method:'post',
     data:data,
-    url:'role/list'
+    url:`${api}/role/list`
   });
 };
 
 export const findRoles = () => {
   return axios.request({
-    url:`role/findRoles`,
+    url:`${api}/role/findRoles`,
     data:null,
     method:'get'
   });
@@ -22,7 +25,7 @@ export const save = data => {
   return axios.request({
     method:'post',
     data:data,
-    url:'role/save'
+    url:`${api}/role/save`
   });
 };
 
@@ -30,7 +33,7 @@ export const update = data => {
   return axios.request({
     method:'put',
     data:data,
-    url:'role/update'
+    url:`${api}/role/update`
   });
 };
 
@@ -42,13 +45,13 @@ export const accessPermission = data =>{ //保存角色权限关联的接口  da
   return axios.request({
     method:'post',
     data:data,
-    url:'role/accessPermission'
+    url:`${api}/role/accessPermission`
   });
 };
 
 export const getAssessPermissions = id => {  //查询已关联的角色权限接口  id = roleId
   return axios.request({
-    url:`role/getAssessPermissions/${id}`,
+    url:`${api}/role/getAssessPermissions/${id}`,
     data:null,
     method:'get'
   });
@@ -57,7 +60,7 @@ export const getAssessPermissions = id => {  //查询已关联的角色权限接
 
 export const assessRole = data =>{
   return axios.request({
-    url:'role/assessRole',
+    url:`${api}/role/assessRole`,
     data:data,
     method:'post'
   });
@@ -65,7 +68,7 @@ export const assessRole = data =>{
 
 export const getAssessRoles = data =>{
   return axios.request({
-    url:`role/getAssessRoles/${data}`,
+    url:`${api}/role/getAssessRoles/${data}`,
     data:null,
     method:'get'
   });

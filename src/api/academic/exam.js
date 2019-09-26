@@ -1,7 +1,10 @@
 import axios from '@/libs/api.request.js'
+
+const api = "teacher";
+
 export const save = data =>{
   return axios.request({
-    url:'exam/save',
+    url:`${api}/exam/save`,
     method:'post',
     data:data
   });
@@ -9,7 +12,7 @@ export const save = data =>{
 
 export const update = data =>{
   return axios.request({
-    url:'exam/update',
+    url:`${api}/exam/update`,
     method:'put',
     data:data
   });
@@ -21,7 +24,7 @@ export const saveOrUpdate = data =>{
 
 export const list = data =>{
   return axios.request({
-    url:'exam/list',
+    url:`${api}/exam/list`,
     method:'post',
     data:data
   });
@@ -29,7 +32,7 @@ export const list = data =>{
 
 export const startExam = data =>{
   return axios.request({
-    url:`exam/startExam/${data.id}`,
+    url:`${api}/exam/startExam/${data.id}`,
     method:'get',
     data:null
   });
@@ -37,7 +40,7 @@ export const startExam = data =>{
 
 export const showExam = data =>{
   return axios.request({
-    url:`exam/showExam`,
+    url:`${api}/exam/showExam`,
     method:'post',
     data:data
   });
@@ -45,7 +48,7 @@ export const showExam = data =>{
 
 export const stopExam = data =>{
   return axios.request({
-    url:`exam/stopExam`,
+    url:`${api}/exam/stopExam`,
     method:'post',
     data:data
   });
@@ -53,7 +56,7 @@ export const stopExam = data =>{
 
 export const readStudentAsks = data =>{
   return axios.request({
-    url:`exam/readStudentAsks/${data}`,
+    url:`${api}/exam/readStudentAsks/${data}`,
     method:'get',
     data:null
   });
@@ -61,7 +64,7 @@ export const readStudentAsks = data =>{
 
 export const lastExam = data =>{  //给问答题评分
   return axios.request({
-    url:'exam/lastExam',
+    url:`${api}/exam/lastExam`,
     method:'put',
     data:data
   });
@@ -69,7 +72,7 @@ export const lastExam = data =>{  //给问答题评分
 
 export const endExam = data =>{
   return axios.request({
-    url:`exam/endExam`,
+    url:`${api}/exam/endExam`,
     method:'post',
     data:data
   });
@@ -77,7 +80,7 @@ export const endExam = data =>{
 
 export const analysisExam = data =>{
   return axios.request({
-    url:`exam/analysisExam`,
+    url:`${api}/exam/analysisExam`,
     method:'post',
     data:data
   });
@@ -85,7 +88,7 @@ export const analysisExam = data =>{
 
 export const showObjectExam = data =>{
   return axios.request({
-    url:'exam/showObjectExam',
+    url:`${api}/exam/showObjectExam`,
     method:'post',
     data:data
   });
@@ -93,7 +96,7 @@ export const showObjectExam = data =>{
 
 export const getQuestionExamTeacherList = data =>{
   return axios.request({
-    url:'exam/getQuestionExamTeacherList',
+    url:`${api}/exam/getQuestionExamTeacherList`,
     method:'post',
     data:data
   });

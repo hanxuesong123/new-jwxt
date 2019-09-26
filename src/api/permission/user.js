@@ -1,8 +1,10 @@
 import axios from '@/libs/api.request.js'
 
+const api = "teacher";
+
 export const getTeacherList = data => {
   return axios.request({
-    url:'user/getTeacherList',
+    url:`${api}/user/getTeacherList`,
     data:data,
     method:'post'
   });
@@ -10,7 +12,7 @@ export const getTeacherList = data => {
 
 export const saveTeacher = data =>{
   return axios.request({
-    url:'user/saveTeacher',
+    url:`${api}/user/saveTeacher`,
     data:data,
     method:'post'
   });
@@ -18,7 +20,7 @@ export const saveTeacher = data =>{
 
 export const updateTeacher = data =>{
   return axios.request({
-    url:'user/updateTeacher',
+    url:`${api}/user/updateTeacher`,
     data:data,
     method:'put'
   });
@@ -30,7 +32,7 @@ export const saveOrUpdate = data => {
 
 export const findTeachers = () =>{
   return axios.request({
-    url:'user/findTeachers',
+    url:`${api}/user/findTeachers`,
     data:null,
     method:'get'
   });

@@ -1,9 +1,11 @@
 import axios from '@/libs/api.request.js'
 
+const api = "teacher";
+
 export const findGeneralByCode = data =>{
   return axios.request({
     data:data,
-    url:'general/findGeneralByCode',
+    url:`${api}/general/findGeneralByCode`,
     method:'post'
   });
 };
@@ -11,7 +13,7 @@ export const findGeneralByCode = data =>{
 export const findChapterByCodeAndStage = data =>{
   return axios.request({
     data:data,
-    url:'general/findChapterByCodeAndStage',
+    url:`${api}/general/findChapterByCodeAndStage`,
     method:'post'
   });
 };
@@ -19,7 +21,7 @@ export const findChapterByCodeAndStage = data =>{
 export const  list = data =>{
   return axios.request({
     data:data,
-    url:'general/list',
+    url:`${api}/general/list`,
     method:"post"
   });
 };
@@ -28,7 +30,7 @@ export const  list = data =>{
 export const  save = data =>{
   return axios.request({
     data:data,
-    url:'general/save',
+    url:`${api}/general/save`,
     method:"post"
   });
 };
@@ -36,7 +38,7 @@ export const  save = data =>{
 export const  update = data =>{
   return axios.request({
     data:data,
-    url:'general/update',
+    url:`${api}/general/update`,
     method:"put"
   });
 };
@@ -48,7 +50,7 @@ export const saveOrUpdate = (data) =>{
 export const opt = data =>{
   return axios.request({
     data:data,
-    url:`general/opt`,
+    url:`${api}/general/opt`,
     method:'post'
   });
 };
@@ -56,7 +58,7 @@ export const opt = data =>{
 export const findGenerals = () => {
   return axios.request({
     data:null,
-    url:'general/findGenerals',
+    url:`${api}/general/findGenerals`,
     method:'get'
   });
-}
+};

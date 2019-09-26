@@ -105,7 +105,9 @@
         },
         watch:{
             value(data){
-                getQuestionExamTeacherList(this.examData).then(res=>this.questionArray = res.data.data); //查询当前试卷的所有试题
+                if(data){
+                    getQuestionExamTeacherList(this.examData).then(res=>this.questionArray = res.data.data); //查询当前试卷的所有试题
+                }
             },
             student(data){
                 if(data == true && this.value == true){ //用于数据回显

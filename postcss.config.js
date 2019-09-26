@@ -16,7 +16,7 @@ module.exports = {
   },
   productionSourceMap: true,
   devServer: {
-    proxy: 'localhost:56710',
+    proxy: 'localhost:56700',
     changeOrigin: true
   }
 };

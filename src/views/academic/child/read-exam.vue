@@ -2,7 +2,7 @@
     <div>
         <Drawer v-model="value1" :mask="false" title="批阅问答题" :closable="true"  :width="750" style="z-index: 10900;position: absolute">
             <template slot="header">
-                <Button type="error" @click="handleEndExam(examData)">结束考试</Button>
+                <Button type="error" @click="handleEndExam(examData)" :style="{display:parent.validate.point.end ? 'inlineBlock' : 'none'}">结束考试</Button>
             </template>
             <Scroll :height="900">
                 <Card v-for="item in data.list" :key="item.user.id" style="margin-bottom: 10px;background-color: #D3D7D5">
@@ -41,6 +41,7 @@
 
     export default {
         name: "read-exam",
+        props:['parent'],
         data(){
             return {
                 askScore:0,
