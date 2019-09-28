@@ -8,9 +8,17 @@ export const getList = data =>{
     });
 };
 
-export const getQuestionStudentExamList = data =>{
+export const getQuestionStudentExamList = data =>{ //不带答案的数据(用于考试)
     return axios.request({
         url:'student/exam/getQuestionStudentExamList',
+        method:'post',
+        data:data
+    });
+};
+
+export const getAnswerQuestionStudentList = data => { //带答案的数据(用于试卷讲解)
+    return axios.request({
+        url:'student/exam/getAnswerQuestionStudentList',
         method:'post',
         data:data
     });

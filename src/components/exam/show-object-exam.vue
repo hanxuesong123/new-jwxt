@@ -81,11 +81,6 @@
     </div>
 </template>
 <script>
-
-    import { showObjectExam } from "@/api/academic/exam";
-
-    import { goBackStudentExamData } from "@/api/student/exam";
-
     import { getQuestionExamTeacherList } from "@/api/academic/exam";
 
     export default {

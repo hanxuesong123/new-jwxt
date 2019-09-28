@@ -16,19 +16,19 @@ import elementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 
 import eCharts from 'echarts';
-
+import countTo from 'vue-count-to'
 
 Vue.config.productionTip = false;
 Vue.prototype.$config = config; //全局注册应用配置
 Vue.prototype.$access = access;
 Vue.prototype.$echarts = eCharts;
 
+Vue.component("count-to",countTo);
 Vue.component("self-table",SelfTable);
 Vue.component("charts",Charts);
 Vue.use(iView);
 Vue.use(iEditor);
 Vue.use(elementUI);
-
 
 
 new Vue({
