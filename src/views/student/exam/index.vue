@@ -11,7 +11,7 @@
 
         <show-exam ref="showExam" :parent="this"></show-exam>
 
-        <show-object-exam ref="showObjectExam"></show-object-exam>
+        <show-student-exam ref="showStudentExam"></show-student-exam>
     </div>
 </template>
 
@@ -24,13 +24,13 @@
         name: "student-exam-index",
         components:{
             ShowExam:()=>import("@/views/student/exam/show-exam.vue"),
-            ShowObjectExam:()=>import("@/components/exam/show-object-exam.vue")
+            ShowStudentExam:()=>import("@/views/student/exam/show-student-exam.vue")
         },
         data(){
             return {
                 data:[],
                 loading:true,
-                params:{page:1,size:10,total:0}
+                params:{page:1,size:20,total:0}
             }
         },
         computed:{
@@ -44,7 +44,7 @@
                           return h('Tag',{props:{color:params.row.examType == 1? 'warning' : (params.row.examType == 2? 'primary':'error')}},params.row.examType == 1? '日测' : (params.row.examType == 2? '周测':'月考'));
                       }},
                   {key:'examStatus',title:'试卷状态',align:'center',render(h,params){
-                          return h('Tag',{props:{color:params.row.examStatus == '1' ? 'pink' : (params.row.examStatus == '2' ? 'error' : (params.row.examStatus == '3' ? 'warning' : 'info'))}},
+                          return h('Tag',{props:{color:params.row.examStatus == '1' ? 'pink' : (params.row.examStatus == '2' ? 'error' : (params.row.examStatus == '3' ? 'warning' : 'blue'))}},
                               params.row.examStatus == '1' ? '未开始' : (params.row.examStatus == '2' ? '进行中' : (params.row.examStatus == '3' ? '批阅中' : '已结束')));
                       }},
                   {key:'opt',title:'操作',align:'center',render(h,params){
@@ -53,7 +53,7 @@
                             that.openExamWindow(params.row,'start','showExam')
                                 }}},'开始考试'),
                         h('Button',{props:{type:'primary',icon:'ios-eye',ghost:true,size:'small',disabled:params.row.examStatus != '4'},on:{click(){
-                            that.openExamWindow(params.row,'show','showObjectExam')
+                            that.openExamWindow(params.row,'show','showStudentExam')
                                 }}},'查看试卷'),
                     ],'');
                   }}

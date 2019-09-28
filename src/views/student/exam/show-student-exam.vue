@@ -82,11 +82,7 @@
 </template>
 <script>
 
-    import { showObjectExam } from "@/api/academic/exam";
-
-    import { goBackStudentExamData } from "@/api/student/exam";
-
-    import { getQuestionExamTeacherList } from "@/api/academic/exam";
+    import { getQuestionStudentExamList,goBackStudentExamData } from "@/api/student/exam";
 
     export default {
         name:'show-student-exam',
@@ -101,12 +97,20 @@
                 singleAsk:[], //学生单选题情况
                 mutipleAsk:[],//学生多选题情况
                 askAsk:[], //学生简答题情况
+                student:false
             }
         },
         watch:{
             value(data){
                 if(data){
-                    getQuestionExamTeacherList(this.examData).then(res=>this.questionArray = res.data.data); //查询当前试卷的所有试题
+                    getQuestionStudentExamList(this.examData).then(res=>this.questionArray = res.data.data); //查询当前试卷的所有试题
+                }
+            },
+            student(data){
+                if(data == true && this.value == true){ //用于数据回显
+                    goBackStudentExamData(this.examData).then(res=>{
+                        console.log(res.data.data)
+                    })
                 }
             }
         },

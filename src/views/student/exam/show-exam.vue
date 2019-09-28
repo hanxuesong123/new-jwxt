@@ -1,6 +1,6 @@
 <template>
     <div>
-        <Modal v-model="value"  :closable="false" :fullscreen="true" :footer-hide="true" :loading="loading">
+        <Modal v-model="value"  title="考试" :closable="true" :fullscreen="true" :footer-hide="true" :loading="loading" @on-cancel="cancel">
             <Row>
                 <Col :span="24">
                     <!--进度条-->
@@ -123,7 +123,7 @@
 </template>
 <script>
 
-    import { getQuestionExamList,saveExam,getExamStatus } from "@/api/student/exam";
+    import { getQuestionStudentExamList,saveExam,getExamStatus,saveTempAnswer,echoTempAnswer } from "@/api/student/exam";
     import { splice } from "@/utils/tools";
 
     export default {
@@ -139,7 +139,8 @@
                 singleAsk:[], //学生单选题情况
                 mutipleAsk:[],//学生多选题情况
                 askAsk:[], //学生简答题情况
-                timer:'',//定时器
+                timer:'',//定时器:定期查询当前试卷状态,如果为4则停止考试
+                saveTempAnswerTimer:''
             }
         },
         computed:{
@@ -152,22 +153,57 @@
         },
         watch:{
             value(data){
-                this.timer = setInterval(()=>{
-                    getExamStatus(this.examData.id).then(res=>{
-                        if(res.data.data.examStatus != 2){
-                            //this.value = false;
-                            this.$router.push('/');
-                            this.submitExam();
-                            this.$destroy('show-student-exam');
-                        };
-                    })
-                },1000 * 5);
-                getQuestionExamList(this.examData).then(res=>this.questionArray = res.data.data); //查询当前试卷的所有试题
-                //打开页面后, 所有单选题答案默认为5,没填写就给5 如果填写了就替换5
-                if(this.examData.singleCount && this.examData.singleCount > 0) for(let i = 0 ; i < this.examData.singleCount ; i ++) this.singleAsk.push(5);
-                if(this.examData.mutipleCount && this.examData.mutipleCount > 0) for(let i = 0 ; i < this.examData.mutipleCount; i ++) this.mutipleAsk.push(["5"]);//在提交试卷时,需要判断当前选项的数组长度,如果长度大于1,则把5删掉
-                if(this.examData.askCount && this.examData.askCount > 0) for(let i = 0 ; i < this.examData.askCount ; i ++) this.askAsk.push("暂无任何内容");
-                //this.toggleFullScreen();
+                if(data){
+                    //打开页面后, 所有单选题答案默认为5,没填写就给5 如果填写了就替换5
+                    if(this.examData.singleCount && this.examData.singleCount > 0){
+                        for(let i = 0 ; i < this.examData.singleCount ; i ++){
+                            this.singleAsk.push(5);
+                        }
+                    }
+
+
+                    if(this.examData.mutipleCount && this.examData.mutipleCount > 0) for(let i = 0 ; i < this.examData.mutipleCount; i ++) this.mutipleAsk.push(["5"]);//在提交试卷时,需要判断当前选项的数组长度,如果长度大于1,则把5删掉
+
+                    if(this.examData.askCount && this.examData.askCount > 0) for(let i = 0 ; i < this.examData.askCount ; i ++) this.askAsk.push("暂无任何内容");
+
+
+                    echoTempAnswer(this.examData.id).then(res=>{//回显数据
+                        let arr = [];
+                        if(res && res.data && res.data.data){
+                            let array = res.data.data.split("#"); //5,3,5,5,5#5@5@5@5@5#
+                            this.singleAsk = array[0].split(",");
+
+
+                            //5,2,3,4 5,3,4 5,1,2 5,1,2,3,4 5,1,2,3
+                            array[1].split("@").forEach(item=>{
+                                arr.push(item.split(","));
+                            });
+                            this.mutipleAsk = arr;
+                        }
+                    });
+
+
+                    getQuestionStudentExamList(this.examData).then(res=>this.questionArray = res.data.data); //查询当前试卷的所有试题
+
+                    this.timer = setInterval(()=>{
+                        if(this.examData && this.examData.id){
+                            getExamStatus(this.examData.id).then(res=>{
+                                if(res.data.data.examStatus != 2) {
+                                    this.$router.push('/');
+                                    this.submitExam();
+                                    this.$destroy('show-student-exam');
+                                }
+                            })
+                        }
+                    },1000 * 10);
+
+                    this.saveTempAnswerTimer = setInterval(()=>{
+                        if(this.examData && this.examData.id){
+                            let data = {id:this.examData.id,single:this.singleAsk.join(","),mutiple:this.mutipleAsk.join("@"),ask:this.askAsk.join(",")};
+                            saveTempAnswer(data);
+                        }
+                    },1000 * 20);
+                }
             },
             singleAsk(data){ //监听单选题选项 如果学生操作单选题,则影响进度条
                 if(data && data.length > 0){
@@ -195,6 +231,10 @@
             singleChange(){ //单选改变时触发
 
             },
+            cancel(){
+                clearInterval(this.timer);
+                clearInterval(this.saveTempAnswerTimer);
+            },
             submitExam(){
                 //处理对选题数据
                 if(this.mutipleAsk && this.mutipleAsk.length > 0){
@@ -218,8 +258,13 @@
                     this.mutipleAsk=[];//学生多选题情况
                     this.askAsk=[]; //学生简答题情况
 
+
+                    clearInterval(this.timer);
+                    clearInterval(this.saveTempAnswerTimer);
+
                     this.value = false;
                     this.$parent.getList(this.$parent.params);
+
                 })
             },
             handleSubmit(){
@@ -251,9 +296,6 @@
                     }
                 }
             }
-        },
-        beforeDestroy() {
-            clearInterval(this.timer);
         }
     }
 </script>

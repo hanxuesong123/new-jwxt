@@ -39,28 +39,28 @@
         },
         computed:{
 
-            good(){
+            good(){  //优秀
                 let count =  this.scoreArray.filter(item=>{
                     return item.score >= 90
                 }).length;
 
                 return Math.floor((count / this.scoreArray.length) * 100);
             },
-            hg(){
+            hg(){  //合格
                 let count =  this.scoreArray.filter(item=>{
                     return (item.score < 90 && item.score >= 60)
                 }).length;
 
                 return Math.floor((count / this.scoreArray.length) * 100);
             },
-            bhg(){
+            bhg(){ //不合格
                 let count =  this.scoreArray.filter(item=>{
                     return item.score < 60
                 }).length;
 
                 return Math.floor((count / this.scoreArray.length) * 100);
             },
-            no(){
+            no(){ //未参考
                 let count =  this.scoreArray.filter(item=>{
                     return item.status == '0'
                 }).length;
@@ -84,20 +84,20 @@
         methods:{
             init() {
                 let that = this;
-                let myChart = this.$echarts.init(document.getElementById('myChart'));
+                let myChart = this.$echarts.init(document.getElementById('myChart'));  //实例化echarts容器
                 // 绘制图表
                 myChart.setOption({
                     title: { //标题项
                         show: true, //是否显示标题
                         text: '123213', //主标题
-                        subtext: '123', //副标题
+                        subtext: that.subTitle, //副标题
                         textAlign: 'auto'//标题位置 left right center
                     },
                     color: ['#3398DB'], //图形颜色
                     tooltip: { //提示框组件
                         trigger: 'axis', //触发类型 'item'数据项图形触发，主要在散点图，饼图等无类目轴的图表中使用。 'axis'坐标轴触发，主要在柱状图，折线图等会使用类目轴的图表中使用
                         axisPointer: {  // 坐标轴指示器，坐标轴触发有效
-                            type: 'cross',        // 指示器类型 'line' 直线指示器 'shadow' 阴影指示器 'none' 无指示器 'cross' 十字准星指示器。其实是种简写，表示启用两个正交的轴的 axisPointer。
+                            type: 'shadow',        // 指示器类型 'line' 直线指示器 'shadow' 阴影指示器 'none' 无指示器 'cross' 十字准星指示器。其实是种简写，表示启用两个正交的轴的 axisPointer。
                             label: {
                                 show: true    //强调x轴文本标签
                             }

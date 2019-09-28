@@ -8,9 +8,9 @@ export const getList = data =>{
     });
 };
 
-export const getQuestionExamList = data =>{
+export const getQuestionStudentExamList = data =>{
     return axios.request({
-        url:'student/exam/getQuestionExamList',
+        url:'student/exam/getQuestionStudentExamList',
         method:'post',
         data:data
     });
@@ -38,6 +38,23 @@ export const saveExam = data =>{
         url:'student/exam/saveExam',
         method:'post',
         data:data
+    });
+};
+
+export const saveTempAnswer = data =>{
+    return axios.request({
+        url:'student/exam/saveTempAnswer',
+        method:'post',
+        data:data
+    });
+};
+
+
+export const echoTempAnswer = data => { //回显临时数据
+    return axios.request({
+        url:`student/exam/echoTempAnswer/${data}`,
+        method:'get',
+        data:null
     });
 };
 

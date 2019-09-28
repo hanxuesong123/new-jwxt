@@ -215,6 +215,28 @@ export default [
       }
     ]
   },
+  {
+    path:'/supervise',
+    name:'supervise',
+    component:Main,
+    meta:{
+      title:'监测管理',
+      icon:'',
+      hideInMenu: false,
+      parentName: "academic"
+    },
+    children:[
+      {
+        path: "supervise_score",
+        name: "supervise_score",
+        component: () => import("@/views/academic/supervise/score_supervise.vue"),
+        meta: {
+          title: "成绩监测",
+          hideInMenu: false
+        }
+      }
+    ]
+  },
     //行政部门
   {
     path:'/staff_management',

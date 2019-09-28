@@ -17,13 +17,13 @@ class HttpRequest {
     getInSideConfig(){
         const config = {
             baseURL:this.baseUrl,
-            params:{ //请求时,携带的额外参数
+            /*params:{ //请求时,携带的额外参数
                 "token": getToken()
-            },
+            },*/
             timeout:200000,
-            /*headers:{
+            headers:{
               token:getToken()
-            }*/
+            }
         };
         return config;
     }
