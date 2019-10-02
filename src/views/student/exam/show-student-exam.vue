@@ -2,8 +2,8 @@
     <div>
         <Modal v-model="value"  :closable="true" :fullscreen="true" :footer-hide="true" :loading="loading">
 
-            <Affix style="margin-left: 30px;height: 150px">
-                <Card style="height: 150px" :bordered="false" :dis-hover="true">
+            <Affix v-if="studentResultArray.score.status != '0'"  style="margin-left: 30px;height: 150px">
+                <Card   style="height: 150px" :bordered="false" :dis-hover="true">
                        <Row>
                            <Col :span="12" style="text-align: center">
                                <span>你的总分是:</span>
@@ -54,7 +54,7 @@
 
                 <Card v-for="(single,index) in questionArray.singleList" :key="single.id" style="margin-bottom: 50px"  :bordered="false" :dis-hover="true">
                     <template slot="title">
-                        <h3> <Tag color="success">对</Tag>  单选题第{{index + 1}}题:  {{single.singleContent}}</h3>
+                        <h3>   单选题第{{index + 1}}题:  {{single.singleContent}}</h3>
                     </template>
                     <RadioGroup v-model="singleAsk[index]" :vertical="true" style="margin-top: 10px"  >
                         <Radio label="1" disabled="disabled">A: {{single.singleOptionA}}</Radio>
@@ -66,7 +66,7 @@
 
                     <Card  :bordered="false" :dis-hover="true">
                         <Tag color="pink">
-                            <span>你的答案:{{format_single(studentResultArray.single[index].optionIds)}}</span>
+                            <span>你的答案:{{ studentResultArray.single[index] != null ?  format_single(studentResultArray.single[index].optionIds) : "未答题" }}</span>
                         </Tag>
                         <Tag color="success">
                             <span>正确答案:{{single.singleAsk  == '1' ? 'A' : (single.singleAsk == '2' ? 'B' : (single.singleAsk == '3' ? 'C' : 'D'))}}</span>
@@ -100,7 +100,7 @@
 
                     <Card  :bordered="false" :dis-hover="true">
                         <Tag color="pink">
-                            <span>你的答案:{{format_mutipleAsk(studentResultArray.mutiple[index].optionIds)}}</span>
+                            <span>你的答案:{{  studentResultArray.mutiple[index] != null ? format_mutipleAsk(studentResultArray.mutiple[index].optionIds) : '未答题' }}</span>
                         </Tag>
                         <Tag color="success">
                             <span>正确答案:{{format_mutipleAsk(mutiple.handleMutipleAsk)}} </span>
@@ -170,15 +170,19 @@
         methods:{
 
             format_single(data){
-                if(data == '1'){
-                    return 'A';
-                }else if(data == '2'){
-                    return 'B';
-                }else if(data == '3'){
-                    return 'C';
-                }else if(data == '4'){
-                    return 'D';
-                }else if(data == '5'){
+                if(data){
+                    if(data == '1'){
+                        return 'A';
+                    }else if(data == '2'){
+                        return 'B';
+                    }else if(data == '3'){
+                        return 'C';
+                    }else if(data == '4'){
+                        return 'D';
+                    }else if(data == '5'){
+                        return "未答";
+                    }
+                }else{
                     return "未答";
                 }
             },
@@ -186,25 +190,30 @@
             format_mutipleAsk(data){ //处理多选题答案的工具方法
                 let array = [];
 
-                if(data.includes("1")){ //1,3 A,C
-                    array.push("A");
-                }
-                if(data.includes("2")){
-                    array.push("B");
-                }
-                if(data.includes("3")){
-                    array.push("C");
-                }
-                if(data.includes("4")){
-                    array.push("D");
-                }
+                if(data){
+                    if(data.includes("1")){ //1,3 A,C
+                        array.push("A");
+                    }
+                    if(data.includes("2")){
+                        array.push("B");
+                    }
+                    if(data.includes("3")){
+                        array.push("C");
+                    }
+                    if(data.includes("4")){
+                        array.push("D");
+                    }
 
 
-                if(data.includes("5")){
+                    if(data.includes("5")){
+                        array.push("未答题");
+                    }
+
+                    return array.join(",");
+                }else{
                     array.push("未答题");
+                    return array.join("");
                 }
-
-                return array.join(",");
 
             }
         }

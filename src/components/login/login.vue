@@ -3,8 +3,10 @@
     <Card  style="opacity: 0.6;background-color: #99ccff" class="card" icon="log-in" title="欢迎登陆" :bordered="false">
 
       <template slot="title">
-        <img src="../../assets/image/logo.png" width="200px" height="50px"><br>
-        <h4 style="margin-top: 5px">石家庄北大青鸟互联网教育集团欢迎您</h4>
+        <center>
+          <img src="../../assets/image/logo.png" width="200px" height="50px"><br>
+          <h4 style="margin-top: 5px">石家庄北大青鸟互联网教育集团欢迎您</h4>
+        </center>
       </template>
 
       <Form ref="loginForm" :model="form" :rules="rules" @keydown.enter.native="handleSubmit('loginForm')">

@@ -1,32 +1,37 @@
 <template>
     <div>
         <Card :bordered="false" :dis-hover="true" style="height: 50px;">
-      <span v-if="validate.point.query">
-        <Select clearable v-model="params.classesId" style="width: 150px;margin-right: 5px;float: left" placeholder="请选择班级">
-          <Option :value="item.id" :key="item.id" v-for="item in classesArray">{{item.className}}</Option>
-        </Select>
+          <span v-if="validate.point.query">
+             <RadioGroup type="button" v-model="params.questionType" style="margin-right: 5px;float: left">
+              <Radio label="1">单/多/问试卷</Radio>
+              <Radio label="2">上机试卷</Radio>
+            </RadioGroup>
 
-        <Input v-model="params.examName" style="width: 150px;margin-right: 5px;float: left" placeholder="请输入试卷名称" />
+            <Select clearable v-model="params.classesId" style="width: 150px;margin-right: 5px;float: left" placeholder="请选择班级">
+              <Option :value="item.id" :key="item.id" v-for="item in classesArray">{{item.className}}</Option>
+            </Select>
 
-        <Select clearable v-model="params.examType" style="width: 150px;margin-right: 5px;float: left" placeholder="请选择试卷类型">
-          <Option :value="1">日测</Option>
-          <Option :value="2">周测</Option>
-          <Option :value="3">月考</Option>
-        </Select>
+            <Input v-model="params.examName" style="width: 150px;margin-right: 5px;float: left" placeholder="请输入试卷名称" />
 
-        <Select clearable v-model="params.examStatus" style="width: 150px;margin-right: 5px;float: left" placeholder="请选择试卷状态">
-          <Option :value="1">未开始</Option>
-          <Option :value="2">进行中</Option>
-          <Option :value="3">批阅中</Option>
-          <Option :value="4">已结束</Option>
-        </Select>
+            <Select clearable v-model="params.examType" style="width: 150px;margin-right: 5px;float: left" placeholder="请选择试卷类型">
+              <Option :value="1">日测</Option>
+              <Option :value="2">周测</Option>
+              <Option :value="3">月考</Option>
+            </Select>
 
-        <Button type="info" @click="getExamList(params)" style="width: 150px;margin-right: 5px;float: left">查询数据</Button>
-        <Button type="info" @click="params = {page:1,size:20},getExamList(params)" style="width: 150px;margin-right: 5px;float: left">重置查询</Button>
-      </span>
+            <Select clearable v-model="params.examStatus" style="width: 150px;margin-right: 5px;float: left" placeholder="请选择试卷状态">
+              <Option :value="1">未开始</Option>
+              <Option :value="2">进行中</Option>
+              <Option :value="3">批阅中</Option>
+              <Option :value="4">已结束</Option>
+            </Select>
 
-            <Button type="primary" @click="openWindow('addEditExam',null)" :style="{width: '150px',marginRight: '5px',display:validate.point.add ? 'inlineBlock' : 'none'}">新增试卷</Button>
+            <Button type="info" @click="getExamList(params)" style="width: 150px;margin-right: 5px;float: left">查询数据</Button>
+            <Button type="info" @click="params = {page:1,size:20,questionType:'1'},getExamList(params)" style="width: 150px;margin-right: 5px;float: left">重置查询</Button>
+          </span>
+          <Button type="primary" @click="openWindow('addEditExam',null)" :style="{width: '150px',marginRight: '5px',display:validate.point.add ? 'inlineBlock' : 'none'}">新增试卷</Button>
         </Card>
+
         <Card :bordered="false" :dis-hover="true">
             <self-table :list="getExamList" :data="examArray" :columns="columns" :loading="loading" :params="params"></self-table>
         </Card>
@@ -34,6 +39,7 @@
         <add-edit-exam ref="addEditExam"></add-edit-exam>
         <show-exam ref="showExam" :parent="this"></show-exam>
         <read-exam ref="readExam" :parent="this"></read-exam>
+        <read-upper-exam ref="readUpperExam"></read-upper-exam>
         <analysis-exam ref="analysisExam"></analysis-exam>
         <show-object-exam ref="showObjectExam"></show-object-exam>
     </div>
@@ -51,13 +57,14 @@
             AddEditExam:()=>import("@/views/academic/child/add-edit-exam.vue"),
             ShowExam:()=>import("@/views/academic/child/show-exam.vue"),
             ReadExam:()=>import("@/views/academic/child/read-exam.vue"),
+            ReadUpperExam:()=>import("@/views/academic/child/read-upper-exam.vue"),
             AnalysisExam:()=>import("@/views/academic/child/analysis-exam.vue"),
             ShowObjectExam:()=>import("@/components/exam/show-object-exam.vue")
         },
         data(){
             return {
                 loading:true,
-                params:{page:1,size:20,total:0},
+                params:{page:1,size:20,total:0,questionType:'1'},
                 examArray:[],
                 classesArray:[],
                 rowData:{},
@@ -117,6 +124,10 @@
                 this.$refs[name].value = true;
                 this.$refs[name].value1 = true;
             },
+            readUpperExam(name,data){
+              this.$refs[name].examData = data;
+              this.$refs[name].value = true;
+            },
             analysisExam(name,data){
                 this.$refs[name].examObject = data;
                 this.$refs[name].value = true;
@@ -150,7 +161,7 @@
                             return h('Tag',{props:{color:params.row.examStatus == '1' ? 'pink' : (params.row.examStatus == '2' ? 'error' : (params.row.examStatus == '3' ? 'warning' : 'primary'))}},
                                 params.row.examStatus == '1' ? '未开始' : (params.row.examStatus == '2' ? '进行中' : (params.row.examStatus == '3' ? '批阅中' : '已结束')));
                         }},
-                    {key:'opt',title:'操作',align:'center',width:'500px',render(h,params){
+                    {key:'opt',title:'操作',align:'center',width:'600px',render(h,params){
                             return h('span',[
                                 h('Button',{props:{type:'primary',icon:'md-bulb',size:'small',disabled: params.row.examStatus == 1 ? false : true },style:{marginRight:'5px',display:that.validate.point.start ? 'inlineBlock':'none' },on:{click(){
                                             that.startExam(params.row);
@@ -158,9 +169,12 @@
                                 h('Button',{props:{type:'primary',icon:'ios-eye',size:'small',disabled: params.row.examStatus == 2 ? false : true},style:{marginRight:'5px',display:that.validate.point.show ? 'inlineBlock':'none' },on:{click(){
                                             that.showExam('showExam',params.row);
                                         }}},'已交/未交'),
-                                h('Button',{props:{type:'primary',icon:'ios-brush',size:'small',disabled: params.row.examStatus == 3 ? false : true},style:{marginRight:'5px',display:that.validate.point.read ? 'inlineBlock':'none' },on:{click(){
+                                h('Button',{props:{type:'primary',icon:'ios-brush',size:'small',disabled: params.row.examStatus == 3  && !params.row.questionTypeIds.includes("4") ? false : true},style:{marginRight:'5px',display:that.validate.point.read ? 'inlineBlock':'none' },on:{click(){
                                             that.readExam('readExam',params.row);
                                         }}},'批阅试卷'),
+                              h('Button',{props:{type:'primary',icon:'ios-brush',size:'small',disabled: params.row.examStatus == 3  && params.row.questionTypeIds.includes("4") ? false : true},style:{marginRight:'5px',display:that.validate.point.read ? 'inlineBlock':'none' },on:{click(){
+                                    that.readUpperExam('readUpperExam',params.row);
+                                  }}},'批阅上机'),
                                 h('Button',{props:{type:'primary',icon:'ios-photos',size:'small',disabled: params.row.examStatus == 4 ? false : true},style:{marginRight:'5px',display:that.validate.point.analysis ? 'inlineBlock':'none' },on:{click(){
                                             that.analysisExam('analysisExam',params.row);
                                         }}},'成绩分析'),
