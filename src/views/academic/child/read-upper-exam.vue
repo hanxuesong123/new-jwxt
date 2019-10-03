@@ -17,6 +17,9 @@
                 </Scroll>
             </Card>
         </Drawer>
+
+        <player-video ref="playerVideo"></player-video>
+
     </div>
 </template>
 
@@ -26,6 +29,9 @@
 
     export default {
         name: "read-upper-exam",
+        components:{
+            PlayerVideo:()=>import("@/views/academic/child/player-video.vue")
+        },
         data(){
             return {
                 value : false,
@@ -37,24 +43,21 @@
         watch:{
             value(data){
                 if(data){
-                    readStudentUppers(this.examData).then(res=>{
-                        console.log(res.data.data);
-                        this.upperList = res.data.data.uppers;
-                        this.studentExamContent = res.data.data.list;
-                    });
+                    this.getData();
                 }
             }
         },
         computed:{
             columns(){
+                let that = this;
                 return [
                     {type:'index',title:'序号',align:'center'},
                     {type:'nickName',title:'学生姓名',align:'center',render(h,params){
                         return h('span',{},params.row.user.nickName);
                     }},
                     {type:'opt',title:'视频',align:'center',render(h,params){
-                        return h('Button',{props:{type:'error',size:'small',ghost:true,icon:'ios-videocam',disabled:params.row.list[0] == null},on:{click(){
-                            alert("出视频界面");
+                        return h('Button',{props:{type:'error',size:'small',ghost:true,icon:'ios-videocam',disabled:params.row.list[0] == null || params.row.score.upperScore > 0},on:{click(){
+                            that.openPlayerWindow(params.row,'playerVideo');
                         }}},'观看');
                     }},
                     {type:'upperScore',title:'上机题评分',align:'center',render(h,params){
@@ -67,6 +70,16 @@
             }
         },
         methods:{
+            openPlayerWindow(data,name){
+                this.$refs[name].data = data;
+                this.$refs[name].value = true;
+            },
+            getData(){
+                readStudentUppers(this.examData).then(res=>{
+                    this.upperList = res.data.data.uppers;
+                    this.studentExamContent = res.data.data.list;
+                });
+            },
             handleEndExam(data){
                 this.$Modal.confirm({
                     title:'友情提示',

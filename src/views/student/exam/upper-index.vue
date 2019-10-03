@@ -161,6 +161,12 @@
                 this.getList(this.params);
             },
             handleSubmit(){
+
+                if(!this.upper_window.file){
+                    this.$Message.error("请选择视频");
+                    return false;
+                }
+
                 this.$refs['upload'].post(this.upper_window.file);
             }
         },

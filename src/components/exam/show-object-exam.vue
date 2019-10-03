@@ -77,6 +77,16 @@
                 </Card>
             </Card>
 
+            <Card v-if="examData.upperCount && examData.upperCount > 0 && questionArray.upperList.length > 0"
+                  style="margin-top: 30px;margin-left: 30px" :bordered="false" :dis-hover="true">
+                <Card v-for="(upper,index) in questionArray.upperList" :key="upper.id" style="margin-bottom: 50px" :bordered="false" :dis-hover="true">
+                    <template slot="title">
+                        <h3><Tag color="success">上机题第{{index + 1}}题:</Tag>  {{upper.upperContent}}</h3>
+                    </template>
+                </Card>
+            </Card>
+
+
         </Modal>
     </div>
 </template>
@@ -91,11 +101,12 @@
                 loading:true,
                 value : false,
                 examData:{singleCount:0,mutipleCount:0,askCount:0,questionTypeIds:''}, //当前试卷实例
-                questionArray:{singleList:[],mutipleList:[],askList:[]},
+                questionArray:{singleList:[],mutipleList:[],askList:[],upperList:[]},
                 //questionArray:[],
                 singleAsk:[], //学生单选题情况
                 mutipleAsk:[],//学生多选题情况
-                askAsk:[], //学生简答题情况
+                askAsk:[], //学生简答题情况,
+                upperAsk:[]
             }
         },
         watch:{
