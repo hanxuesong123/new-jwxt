@@ -74,3 +74,11 @@ export const goBackStudentExamData = data =>{
         data:data
     });
 };
+
+export const getUpper = data => {
+  return axios.request({
+      url:'student/exam/getUpper',
+      method:'post',
+      data:data
+  });
+};

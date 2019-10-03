@@ -62,6 +62,15 @@ export const readStudentAsks = data =>{
   });
 };
 
+export const readStudentUppers = data =>{
+  return axios.request({
+    url:`${api}/exam/readStudentUppers`,
+    method:'post',
+    data:data
+  });
+};
+
+
 export const lastExam = data =>{  //给问答题评分
   return axios.request({
     url:`${api}/exam/lastExam`,

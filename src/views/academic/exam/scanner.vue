@@ -164,23 +164,23 @@
                     {key:'opt',title:'操作',align:'center',width:'600px',render(h,params){
                             return h('span',[
                                 h('Button',{props:{type:'primary',icon:'md-bulb',size:'small',disabled: params.row.examStatus == 1 ? false : true },style:{marginRight:'5px',display:that.validate.point.start ? 'inlineBlock':'none' },on:{click(){
-                                            that.startExam(params.row);
-                                        }}},'开始考试'),
+                                    that.startExam(params.row);
+                                }}},'开始考试'),
                                 h('Button',{props:{type:'primary',icon:'ios-eye',size:'small',disabled: params.row.examStatus == 2 ? false : true},style:{marginRight:'5px',display:that.validate.point.show ? 'inlineBlock':'none' },on:{click(){
-                                            that.showExam('showExam',params.row);
-                                        }}},'已交/未交'),
+                                    that.showExam('showExam',params.row);
+                                }}},'已交/未交'),
                                 h('Button',{props:{type:'primary',icon:'ios-brush',size:'small',disabled: params.row.examStatus == 3  && !params.row.questionTypeIds.includes("4") ? false : true},style:{marginRight:'5px',display:that.validate.point.read ? 'inlineBlock':'none' },on:{click(){
-                                            that.readExam('readExam',params.row);
-                                        }}},'批阅试卷'),
-                              h('Button',{props:{type:'primary',icon:'ios-brush',size:'small',disabled: params.row.examStatus == 3  && params.row.questionTypeIds.includes("4") ? false : true},style:{marginRight:'5px',display:that.validate.point.read ? 'inlineBlock':'none' },on:{click(){
-                                    that.readUpperExam('readUpperExam',params.row);
-                                  }}},'批阅上机'),
+                                    that.readExam('readExam',params.row);
+                                }}},'批阅试卷'),
+                                h('Button',{props:{type:'primary',icon:'ios-brush',size:'small',disabled: params.row.examStatus == 3  && params.row.questionTypeIds.includes("4") ? false : true},style:{marginRight:'5px',display:that.validate.point.read ? 'inlineBlock':'none' },on:{click(){
+                                  that.readUpperExam('readUpperExam',params.row);
+                                }}},'批阅上机'),
                                 h('Button',{props:{type:'primary',icon:'ios-photos',size:'small',disabled: params.row.examStatus == 4 ? false : true},style:{marginRight:'5px',display:that.validate.point.analysis ? 'inlineBlock':'none' },on:{click(){
-                                            that.analysisExam('analysisExam',params.row);
-                                        }}},'成绩分析'),
+                                    that.analysisExam('analysisExam',params.row);
+                                }}},'成绩分析'),
                                 h('Button',{props:{type:'primary',icon:'ios-create-outline',size:'small',disabled: params.row.examStatus == 4 ? false : true},style:{marginRight:'5px',display:that.validate.point.explain ? 'inlineBlock':'none' },on:{click(){
-                                            that.showObjectExam('showObjectExam',params.row);
-                                        }}},'试卷讲解'),
+                                    that.showObjectExam('showObjectExam',params.row);
+                                }}},'试卷讲解'),
                             ],'');
                         }}
                 ];

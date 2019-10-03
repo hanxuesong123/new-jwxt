@@ -325,7 +325,17 @@ export default [
         name:'student_exam',
         component:()=>import("@/views/student/exam/index.vue"),
         meta:{
-          title:'考试管理',
+          title:'笔试考试',
+          icon:'',
+          hideInMenu:false
+        }
+      },
+      {
+        path:'student_upper_exam',
+        name:'student_upper_exam',
+        component:()=>import("@/views/student/exam/upper-index.vue"),
+        meta:{
+          title:'机试考试',
           icon:'',
           hideInMenu:false
         }

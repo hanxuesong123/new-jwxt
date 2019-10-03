@@ -30,7 +30,7 @@
             return {
                 data:[],
                 loading:true,
-                params:{page:1,size:20,total:0}
+                params:{page:1,size:20,total:0,questionType:'1'}
             }
         },
         computed:{
@@ -38,7 +38,7 @@
               let that = this;
               return [
                   {type:'index',title:'序号',width:'80px',align:'center'},
-                  {key:'examName',title:'试卷名称',align:'center'},
+                  {key:'examName',title:'笔试试卷名称',align:'center'},
                   {key:'examTime',title:'考试时间',align:'center',render(h,params){ return h('span',{},formatDate(params.row.examTime))}},
                   {key:'examType',title:'试卷类型',align:'center',render(h,params){
                           return h('Tag',{props:{color:params.row.examType == 1? 'warning' : (params.row.examType == 2? 'primary':'error')}},params.row.examType == 1? '日测' : (params.row.examType == 2? '周测':'月考'));

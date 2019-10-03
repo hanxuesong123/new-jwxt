@@ -7,12 +7,12 @@
             <Scroll :height="900">
                 <Card v-for="item in data.list" :key="item.user.id" style="margin-bottom: 10px;background-color: #D3D7D5">
                     <template slot="title">
-                    <span>
-                        <Input v-model="askScore" style="width: 250px">
-                            <span slot="prepend" style="color: blue"> <b>{{item.user.nickName}}</b> </span>
-                            <Button  slot="append" @click="handleSubmit(item.score)" :disabled="item.score.askScore > 0 || item.score.status == '0'">提交(单人全题总分)</Button>
-                        </Input>
-                    </span>
+                        <span>
+                            <Input v-model="askScore" style="width: 250px">
+                                <span slot="prepend" style="color: blue"> <b>{{item.user.nickName}}</b> </span>
+                                <Button  slot="append" @click="handleSubmit(item.score)" :disabled="item.score.askScore > 0 || item.score.status == '0'">提交(单人全题总分)</Button>
+                            </Input>
+                        </span>
                     </template>
                     <Scroll>
                         <Card v-for="(answer,index) in item.list" :key="index" :bordered="false" :dis-hover="true" style="margin-bottom: 5px" >
@@ -31,7 +31,6 @@
                 </Card>
             </Scroll>
         </Drawer>
-
     </div>
 </template>
 
