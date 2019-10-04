@@ -6,6 +6,12 @@
       <Button type="error" @click="cancel" size="small" icon="md-add">关闭</Button>
     </template>
 
+    <Card :bordered="false" :dis-hover="true" style="background-color: #2c3e50;color: white;margin-bottom: 20px">
+      <p>各班日测 每天只能出一套</p>
+      <p>各班周测 每周只能出一套</p>
+      <p>各班月考 每月只能出一套</p>
+    </Card>
+
     <Form ref="form" :model="examObject" :rules="rules" :label-width="80">
       <FormItem prop="examName" label="试卷名称">
         <Input type="text" placeholder="请输入试卷名称" v-model="examObject.examName" />

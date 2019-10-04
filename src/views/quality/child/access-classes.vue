@@ -71,7 +71,6 @@
         watch:{
             value(data){
                 if(data){
-                    console.log(this.studentObject)
                     findClasses().then(res=>this.classesArray = res.data.data);
                 }
             }

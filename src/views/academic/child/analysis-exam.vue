@@ -3,21 +3,43 @@
         <!--<charts :xData="xData" :yData="yData" :title="'成绩分析'" :subTitle="subTitle" :parent="this"></charts>-->
 
         <Card :dis-hover="true" :bordered="false">
+            <template slot="title">
+                <span style="font-size: 20px;font-family: 'Arial Black'">成绩分析图</span>
+            </template>
             <div id="myChart" :style="{width: '1400px', height: '400px',marginLeft:'200px'}"></div>
         </Card>
 
-        <Card :dis-hover="true" :bordered="false"  :style="{fontSize:'15px',color:'white',backgroundColor:'#42b983',width: '1400px', height: '50px',marginLeft:'200px'}">
-            <div style="text-align: center">
-                <span style="margin-right: 100px">优秀占比:{{good}}%</span>
-                <span style="margin-right: 100px">合格占比:{{hg}}%</span>
-                <span style="margin-right: 100px">不合格占比:{{bhg}}%</span>
-                <span style="margin-right: 100px">未参考占比:{{no}}%</span>
-            </div>
+        <Card :dis-hover="true" :bordered="false">
+            <template slot="title">
+                <span style="font-size: 20px;font-family: 'Arial Black'">学员排行图</span>
+            </template>
+
+            <Table :data="scoreArray" :columns="columns" :border="true" style="margin: 0px 300px 0px 250px">
+                <template slot="header">
+                    <div style="text-align: center">
+                        <span style="margin-right: 100px">优秀占比:{{good}}%</span>
+                        <span style="margin-right: 100px">合格占比:{{hg}}%</span>
+                        <span style="margin-right: 100px">不合格占比:{{bhg}}%</span>
+                        <span style="margin-right: 100px">未参考占比:{{no}}%</span>
+                    </div>
+                </template>
+            </Table>
         </Card>
 
-        <Card :bordered="false" :dis-hover="true" :style="{width: '1400px', height: '400px',marginLeft:'200px'}">
-            <Table :data="scoreArray" :columns="columns" :border="true"></Table>
+        <Card :bordered="false" :dis-hover="true" v-if="examObject.singleCount > 0">
+            <template slot="title">
+                <span style="font-size: 20px;font-family: 'Arial Black'">单选题对错分析图</span>
+            </template>
+            <Table :data="singleBankData" :columns="singleBankColumns" :border="true" style="margin: 0px 300px 0px 250px"></Table>
         </Card>
+
+        <Card :bordered="false" :dis-hover="true" v-if="examObject.mutipleCount > 0">
+            <template slot="title">
+                <span style="font-size: 20px;font-family: 'Arial Black'">多选题对错分析图</span>
+            </template>
+            <Table :data="mutipleBankData" :columns="mutipleBankColumns" :border="true" style="margin: 0px 300px 0px 250px"></Table>
+        </Card>
+
     </Modal>
 </template>
 
@@ -38,7 +60,72 @@
             }
         },
         computed:{
+            singleBankData(){
+                let arr = [];
+                //思路:
+                // 1.拿到试卷单选题的每一个单选题id
+                // 2.拿到每个学员单选题答题情况
+                // 3.判断,每个学员单选题答题情况是否包含单选题id,如果包含,则+1
+                this.examObject.singleJoins.split(",").forEach((exam_single_id,index)=>{//拿到试卷单选题的每一个单选题id
+                    let ele = { title:"",ok:0,no:0 };
+                    ele.title = "第"+ ( index + 1 ) +"题";
+                    let person_number = this.scoreArray.length;
+                    this.scoreArray.forEach(score=>{//拿到每个学员单选题答题情况
+                       if(score.singleSuccIds.includes(exam_single_id)){
+                           ele.ok += 1;
+                       }
+                   });
+                    ele.no = ((person_number - ele.ok) / person_number) * 100;
+                    ele.ok = ( ele.ok / person_number) * 100 ;
+                    arr.push(ele);
+                });
 
+                return arr;
+            },
+            singleBankColumns(){
+              return [
+                  {key:'title',title:'第几题',align:'center'},
+                  {key:'ok',title:'对题占比',align:'center',render(h,params){
+                    return h('span',{},params.row.ok + "%");
+                  }},
+                  {key:'no',title:'错题占比',align:'center',render(h,params){
+                          return h('span',{},params.row.no + "%");
+                      }}
+              ];
+            },
+            mutipleBankData(){
+                let arr = [];
+                //思路:
+                // 1.拿到试卷单选题的每一个单选题id
+                // 2.拿到每个学员单选题答题情况
+                // 3.判断,每个学员单选题答题情况是否包含单选题id,如果包含,则+1
+                this.examObject.mutipleJoins.split(",").forEach((exam_mutiple_id,index)=>{//拿到试卷单选题的每一个单选题id
+                    let ele = { title:"",ok:0 ,no:0 };
+                    ele.title = "第"+ ( index + 1 ) +"题";
+                    let person_number = this.scoreArray.length;
+                    this.scoreArray.forEach(score=>{//拿到每个学员单选题答题情况
+                        if(score.multipleSuccIds.includes(exam_mutiple_id)){
+                            ele.ok += 1;
+                        }
+                    });
+                    ele.no = ((person_number - ele.ok) / person_number) * 100;
+                    ele.ok = ( ele.ok / person_number) * 100;
+                    arr.push(ele);
+                });
+
+                return arr;
+            },
+            mutipleBankColumns(){
+                return [
+                    {key:'title',title:'第几题',align:'center'},
+                    {key:'ok',title:'对题占比',align:'center',render(h,params){
+                            return h('span',{},params.row.ok + "%");
+                        }},
+                    {key:'no',title:'错题占比',align:'center',render(h,params){
+                            return h('span',{},params.row.no + "%");
+                        }}
+                ];
+            },
             good(){  //优秀
                 let count =  this.scoreArray.filter(item=>{
                     return item.score >= 90
@@ -140,9 +227,6 @@
                     animation: true //是否开启动画
                 }, true);
             }
-        },
-        created() {
-
         },
         watch:{
             value(data){

@@ -77,6 +77,13 @@
                 </Card>
             </Card>
 
+
+
+            <Card v-if="examData.upperCount && examData.upperCount > 0 && questionArray.upperList.length > 0"
+                  style="height: 50px;background-color: #42b983;margin-left: 30px;margin-top: 30px;text-align: center;color: white"  :bordered="false" :dis-hover="true">
+                <h2>上机题&nbsp;&nbsp;&nbsp;&nbsp;共{{examData.upperCount}}道</h2>
+            </Card>
+
             <Card v-if="examData.upperCount && examData.upperCount > 0 && questionArray.upperList.length > 0"
                   style="margin-top: 30px;margin-left: 30px" :bordered="false" :dis-hover="true">
                 <Card v-for="(upper,index) in questionArray.upperList" :key="upper.id" style="margin-bottom: 50px" :bordered="false" :dis-hover="true">

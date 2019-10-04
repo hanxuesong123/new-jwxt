@@ -53,7 +53,8 @@
                 </Scroll>
             </Card>
         </Drawer>
-
+        <analysis-exam ref="analysisExam"></analysis-exam>
+        <show-student-exam ref="showStudentExam"></show-student-exam>
     </div>
 </template>
 
@@ -64,6 +65,10 @@
 
     export default {
         name: "upper-index",
+        components:{
+            AnalysisExam:()=>import("@/views/academic/child/analysis-exam.vue"),
+            ShowStudentExam:()=>import("@/views/student/exam/show-student-exam.vue")
+        },
         data(){
             return {
                 data:[],
@@ -99,14 +104,26 @@
                                     that.showExamContent(params.row);
                                 }}},'开始考试'),
                                 h('Button',{props:{type:'primary',icon:'ios-eye',ghost:true,size:'small',disabled:params.row.examStatus != '4'},style:{marginRight:'5px'},on:{click(){
-
-                                }}},'成绩排名'),
+                                    that.openExamWindow(params.row,'showStudentExam')
+                                }}},'查看试卷'),
+                                h('Button',{props:{type:'primary',icon:'ios-photos',size:'small',disabled: params.row.examStatus == 4 ? false : true},style:{marginRight:'5px'},on:{click(){
+                                    that.analysisExam('analysisExam',params.row);
+                                }}},'成绩分析'),
                             ],'');
                         }}
                 ];
             }
         },
         methods:{
+            openExamWindow(data,name){
+                this.$refs[name].examData = data;
+                this.$refs[name].student = true;
+                this.$refs[name].value = true;
+            },
+            analysisExam(name,data){
+                this.$refs[name].examObject = data;
+                this.$refs[name].value = true;
+            },
             getList(data){ //获得上机题列表
                 getList(data).then(res=>{
                     this.params.total = res.data.data.total;

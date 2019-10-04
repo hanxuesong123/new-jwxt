@@ -9,8 +9,8 @@
 
         <self-table :data="data" :columns="columns" :list="getList" :params="params" :loading="loading"></self-table>
 
+        <analysis-exam ref="analysisExam"></analysis-exam>
         <show-exam ref="showExam" :parent="this"></show-exam>
-
         <show-student-exam ref="showStudentExam"></show-student-exam>
     </div>
 </template>
@@ -23,6 +23,7 @@
     export default {
         name: "student-exam-index",
         components:{
+            AnalysisExam:()=>import("@/views/academic/child/analysis-exam.vue"),
             ShowExam:()=>import("@/views/student/exam/show-exam.vue"),
             ShowStudentExam:()=>import("@/views/student/exam/show-student-exam.vue")
         },
@@ -52,15 +53,22 @@
                         h('Button',{props:{type:'primary',icon:'ios-bookmarks-outline',ghost:true,size:'small',disabled:params.row.examStatus != '2'},style:{marginRight:'5px'},on:{click(){
                             that.openExamWindow(params.row,'start','showExam')
                                 }}},'开始考试'),
-                        h('Button',{props:{type:'primary',icon:'ios-eye',ghost:true,size:'small',disabled:params.row.examStatus != '4'},on:{click(){
+                        h('Button',{props:{type:'primary',icon:'ios-eye',ghost:true,size:'small',disabled:params.row.examStatus != '4'},style:{marginRight:'5px'},on:{click(){
                             that.openExamWindow(params.row,'show','showStudentExam')
                                 }}},'查看试卷'),
+                        h('Button',{props:{type:'primary',icon:'ios-photos',size:'small',disabled: params.row.examStatus == 4 ? false : true},style:{marginRight:'5px'},on:{click(){
+                                    that.analysisExam('analysisExam',params.row);
+                                }}},'成绩分析'),
                     ],'');
                   }}
               ];
           }
         },
         methods:{
+            analysisExam(name,data){
+                this.$refs[name].examObject = data;
+                this.$refs[name].value = true;
+            },
             getList(data){
                 getList(data).then(res=>{
                     this.params.total = res.data.data.total;

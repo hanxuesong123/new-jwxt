@@ -231,7 +231,7 @@ export default [
         name: "supervise_score",
         component: () => import("@/views/academic/supervise/score_supervise.vue"),
         meta: {
-          title: "成绩监测",
+          title: "日测监管",
           hideInMenu: false
         }
       }
