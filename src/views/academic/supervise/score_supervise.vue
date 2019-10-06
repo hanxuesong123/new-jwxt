@@ -9,6 +9,7 @@
                 <Option v-for="classes in classesArray" :value="classes.id" :key="classes.id">{{classes.className}}</Option>
             </Select>
             <Button type="primary" icon="ios-search" @click="getList(params)">查询数据</Button>
+            <span style="margin: 0px 15px 0px 15px;color: #888989;padding-top:10px;float: right">注:个人平均分 = 个人每日得分相加 / 当月天数</span>
         </Card>
         <Card :bordered="false" :dis-hover="true">
             <Table :data="data" :columns="columns" :border="true" size="small"></Table>
@@ -18,7 +19,7 @@
 
 <script>
 
-    import { getDays,formatTime,getDay } from "@/utils/tools";
+    import { getDays,formatTime,getDay,getCountDays } from "@/utils/tools";
     import { getDayExamList } from "@/api/academic/supervise";
     import { findClasses } from "@/api/quality/classes";
 
@@ -39,15 +40,25 @@
               return formatTime(this.params.date);
             },
             columns(){
+                let that = this;
                 let arr = [];
                 let date = this.params.date;
                 let days = getDays(date);
+
                 arr.push({fixed:'left',key:'className',width:'100px', title:'班级',align:'center'});
-                arr.push({fixed:'left',key:'nickName',width:'100px', title:'姓名',align:'center'});
+                arr.push({fixed:'left',key:'nickName',width:'100px', title:'姓名',align:'center',render(h,params){
+                    return h('a',{props:{href:'#'},on:{click(){
+                            console.log(params.row)
+                    }}},params.row.nickName);
+                }});
                 for(let i = 1 ; i <= days ; i ++){
                     arr.push({width:'70px',key:'col'+ i,title:i,align:'center'});
                 }
-                arr.push({fixed:'left',key:'one_avg',width:'100px', title:'个人平均分',align:'center'})
+                arr.push({fixed:'left',key:'one_avg',width:'100px', title:'个人平均分',align:'center',render(h,params){
+                    return h('Tooltip',{props:{content:'平均分 = 每日分相加 / 当月天数',placement:'left'}},[
+                        h('span',{}, (params.row.total/days).toFixed(2))
+                    ],'');
+                    }});
                 return arr;
             },
         },

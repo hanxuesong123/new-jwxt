@@ -19,6 +19,7 @@ export const formatDate = date => {
   return strDate ;
 };
 
+//获取当前日的日期
 export const getDay = date => {
   return date.getDay();
 };
@@ -58,6 +59,17 @@ export const getDays = date => {
   return days;
 };
 
+/*获取一个月的天数 */
+export const getCountDays = (date) => {
+  /* 获取当前月份 */
+  var curMonth = date.getMonth();
+  /*  生成实际的月份: 由于curMonth会比实际月份小1, 故需加1 */
+  date.setMonth(curMonth + 1);
+  /* 将日期设置为0, 这里为什么要这样设置, 我不知道原因, 这是从网上学来的 */
+  date.setDate(0);
+  /* 返回当月的天数 */
+  return date.getDate();
+};
 
 
 export const setToken = token => {
