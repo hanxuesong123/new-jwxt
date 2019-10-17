@@ -159,7 +159,7 @@
 
         }
       },
-      'examObject.questionTypeIdsArray'(value){//TODO:fasdfdsfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfd
+      'examObject.questionTypeIdsArray'(value){
 
         if(value.length != 1 && value.includes("4")){
           this.$Message.error("上机题需要独立出题");

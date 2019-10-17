@@ -38,8 +38,8 @@
                     fluid: true, // 当true时，Video.js player将拥有流体大小。换句话说，它将按比例缩放以适应其容器。
                     sources: [{
                         type: "video/mp4", //支持类型
-                        src: "https://cdn.theguardian.tv/webM/2015/07/20/150716YesMen_synd_768k_vp8.webm" //视频地址
-                        //src:this.data.list[0].zipUrl
+                        src: this.filmSrc //视频地址
+                        //src:
                     }],
                     poster: "../../../../assets/image/bg01.jpg", //你的封面地址
                     // width: document.documentElement.clientWidth, //播放器宽度
@@ -53,11 +53,15 @@
                 }
             }
         },
+        computed:{
+          filmSrc(){
+              return this.data.list[0].zipUrl == null ? "https://cdn.theguardian.tv/webM/2015/07/20/150716YesMen_synd_768k_vp8.webm" : this.data.list[0].zipUrl;
+          }
+        },
         methods:{
             handleSubmit(){
-
+                console.log("zipUrl:",this.data.list[0].zipUrl);
                 this.data.score.upperScore = this.upperScore;
-
                 lastExam(this.data.score).then(res=>{
                     this.$Message.info(res.data.message);
                     this.data.score.upperScore = 0;
@@ -66,6 +70,7 @@
                 })
             },
             cancel(){
+                console.log(this.data.list);
                 this.data.score.upperScore = 0;
                 this.upperScore = 0;
                 this.value = false;

@@ -64,7 +64,7 @@ export const validate_telephone = (rule,value,callback) =>{
     }
 
     setTimeout(()=>{
-        const reg =/^[1][3,4,5,7,8][0-9]{9}$/;
+        const reg =/^[1][3-9][0-9]{9}$/;
         if(!reg.test(value)){
             return callback(new Error("请输入正确的手机号"));
         }else{
@@ -141,4 +141,25 @@ export function isInteger(rule, value, callback) {
             }
         }
     }, 500);
+}
+
+export function isPassword(rule,value,callback){
+    if (!value) {
+        return callback(new Error('输入不可以为空'));
+    }
+    setTimeout(()=>{
+        if(value.length > 15){
+            callback(new Error("输入项不能大于15个字符"))
+        }else{
+            const rep = /^[\u4e00-\u9fa5]+$/;
+            if(rep.test(value)){
+                return callback(new Error("不能输入中文"));
+            }else{
+                callback();
+            }
+        }
+
+
+
+    },500);
 }

@@ -103,6 +103,14 @@ export const showObjectExam = data =>{
   });
 };
 
+export const findSingleStudentScores = data =>{
+  return axios.request({
+    url:`${api}/exam/findSingleStudentScores`,
+    method:'post',
+    data:data
+  });
+};
+
 export const getQuestionExamTeacherList = data =>{
   return axios.request({
     url:`${api}/exam/getQuestionExamTeacherList`,

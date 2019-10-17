@@ -37,3 +37,11 @@ export const findTeachers = () =>{
     method:'get'
   });
 };
+
+export const updatePassword = data =>{
+  return axios.request({
+    url:`${api}/user/updatePassword`,
+    data:data,
+    method:'put'
+  });
+};

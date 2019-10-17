@@ -339,6 +339,16 @@ export default [
           icon:'',
           hideInMenu:false
         }
+      },
+      {
+        path:'student_exercise',
+        name:'student_exercise',
+        component:()=>import("@/views/student/exam/exercise-index.vue"),
+        meta:{
+          title:'我要刷题',
+          icon:'',
+          hideInMenu:false
+        }
       }
     ]
   }

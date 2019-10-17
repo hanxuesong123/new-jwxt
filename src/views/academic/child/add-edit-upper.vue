@@ -9,6 +9,7 @@
                         name="file"
                         :max-size="1000 * 1024 * 500"
                         :format="['zip']"
+                        :headers="{'token':token}"
                         :action="url"
                         :before-upload="beforeUpload"
                         :on-success="uploadSuccess"
@@ -37,11 +38,10 @@
     props:["requestParams",'parent'],
     data(){
       return {
+        token:getToken(),
         upperStyle:'none',
         upperObject:{},
-        //disabledValue:this.$access.has_permission('POINT-QUESTION-UPLOAD'),
-        //btnDisabled:false,
-        url:'http://localhost:56700/teacher/question/upload?token='+ getToken()
+        url:'http://192.168.18.210:80/teacher/question/upload?',
       };
     },
     /*watch:{

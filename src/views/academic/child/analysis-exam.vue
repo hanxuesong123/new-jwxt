@@ -17,10 +17,10 @@
             <Table :data="scoreArray" :columns="columns" :border="true" style="margin: 0px 300px 0px 250px">
                 <template slot="header">
                     <div style="text-align: center">
-                        <span style="margin-right: 100px">优秀占比:{{good}}%</span>
-                        <span style="margin-right: 100px">合格占比:{{hg}}%</span>
-                        <span style="margin-right: 100px">不合格占比:{{bhg}}%</span>
-                        <span style="margin-right: 100px">未参考占比:{{no}}%</span>
+                        <span style="margin-right: 100px;color:red;font-size: 20px">优秀占比:{{good}}%</span>
+                        <span style="margin-right: 100px;color:red;font-size: 20px">合格占比:{{hg}}%</span>
+                        <span style="margin-right: 100px;color:red;font-size: 20px">不合格占比:{{bhg}}%</span>
+                        <span style="margin-right: 100px;color:red;font-size: 20px">未参考占比:{{no}}%</span>
                     </div>
                 </template>
             </Table>
@@ -39,7 +39,7 @@
             </template>
             <Table :data="mutipleBankData" :columns="mutipleBankColumns" :border="true" style="margin: 0px 300px 0px 250px"></Table>
         </Card>
-
+        <analysis-window ref="analysisWindow"></analysis-window>
     </Modal>
 </template>
 
@@ -49,6 +49,9 @@
 
     export default {
         name: "analysis-exam",
+        components:{
+            AnalysisWindow:()=>import("@/views/academic/child/analysis-window.vue")
+        },
         data(){
             return {
                 value : false,
@@ -75,8 +78,9 @@
                            ele.ok += 1;
                        }
                    });
-                    ele.no = ((person_number - ele.ok) / person_number) * 100;
-                    ele.ok = ( ele.ok / person_number) * 100 ;
+                    //ele.no = ((person_number - ele.ok) / person_number) * 100;
+                    //ele.ok = ( ele.ok / person_number) * 100 ;
+                    ele.no = person_number - ele.ok;
                     arr.push(ele);
                 });
 
@@ -86,10 +90,10 @@
               return [
                   {key:'title',title:'第几题',align:'center'},
                   {key:'ok',title:'对题占比',align:'center',render(h,params){
-                    return h('span',{},params.row.ok + "%");
-                  }},
+                          return h('span',{},params.row.ok + "人");
+                      }},
                   {key:'no',title:'错题占比',align:'center',render(h,params){
-                          return h('span',{},params.row.no + "%");
+                          return h('span',{},params.row.no + "人");
                       }}
               ];
             },
@@ -108,8 +112,9 @@
                             ele.ok += 1;
                         }
                     });
-                    ele.no = ((person_number - ele.ok) / person_number) * 100;
-                    ele.ok = ( ele.ok / person_number) * 100;
+                    //ele.no = ((person_number - ele.ok) / person_number) * 100;
+                    //ele.ok = ( ele.ok / person_number) * 100;
+                    ele.no = person_number - ele.ok;
                     arr.push(ele);
                 });
 
@@ -119,10 +124,10 @@
                 return [
                     {key:'title',title:'第几题',align:'center'},
                     {key:'ok',title:'对题占比',align:'center',render(h,params){
-                            return h('span',{},params.row.ok + "%");
+                            return h('span',{},params.row.ok + "人");
                         }},
                     {key:'no',title:'错题占比',align:'center',render(h,params){
-                            return h('span',{},params.row.no + "%");
+                            return h('span',{},params.row.no + "人");
                         }}
                 ];
             },
@@ -158,10 +163,17 @@
                 return this.examObject.examType == '1' ? '日测' : ( this.examObject.examType == '2' ? '周测' : '月考' )
             },
             columns(){
+                let that = this;
                 return [
-                    {key:'nickName',title:'姓名',align:'center'},
+                    {key:'nickName',title:'姓名',align:'center',render(h,params){
+                        return h('a',{props:{href:"#"},on:{click(){
+                            that.openAnalysisWindow('analysisWindow',params.row);
+                        }}},params.row.nickName);
+                    }},
                     {key:'score',title:'成绩',align:'center'},
-                    {key:'sort',title:'排名',align:'center'},
+                    {key:'sort',title:'排名',align:'center',render(h,params){
+                        return h('span',{},that.mingci111(params.row.score));
+                    }},
                     {key:'status',title:'状态',align:'center',render(h,params){
                         return h('span',{style:{color:params.row.status == '0' ? 'red':''}},params.row.status == '0' ? '未考':'已考');
                     }}
@@ -169,6 +181,58 @@
             }
         },
         methods:{
+            openAnalysisWindow(name,data){
+                this.$refs[name].clear();
+                this.$refs[name].params = {studentId:'',date:'',examType:''};
+                this.$refs[name].examObject = this.examObject;
+                this.$refs[name].data = data;
+                this.$refs[name].value = true;
+            },
+            //参数本行的成绩
+            mingci111(chengjiRow){
+                let chengji = [];
+                this.scoreArray.forEach(score=>{
+                    chengji.push(score.score);
+                });
+
+
+                //成绩数组
+                let len = chengji.length;
+                let list = chengji;
+                //排序后数组
+                let swap;
+                for (let i = 0; i < len-1; i++){
+                    for (let j = 0; j < len-1-i; j++){
+                        if (list[j] < list[j+1]){
+                            swap  = list[j];
+                            list[j] = list[j+1];
+                            list[j+1] = swap;
+                        }
+                    }
+                }
+
+                //去重且，将成绩和该成绩的排名保存为对象数组
+                let set = [];
+                let listNew = []
+                for (let i = 0, j = list.length; i < j; i++) {
+                    if (listNew.indexOf(list[i]) === -1) {
+                        let aaa = {}
+                        aaa.chengji = list[i];
+                        aaa.mingci = i+1
+                        set.push(aaa);
+                        listNew.push(list[i])
+                    }
+                }
+                let a = {};
+                //循环遍历对象数组查询该成绩的排名
+                for (let i = 0; i < set.length; i++){
+                    a =  set[i];
+                    if(a.chengji == chengjiRow){
+                        //返回该成绩的排名
+                        return a.mingci;
+                    }
+                }
+            },
             init() {
                 let that = this;
                 let myChart = this.$echarts.init(document.getElementById('myChart'));  //实例化echarts容器
@@ -176,7 +240,7 @@
                 myChart.setOption({
                     title: { //标题项
                         show: true, //是否显示标题
-                        text: '123213', //主标题
+                        text: that.examObject.examName,//'123213', //主标题
                         subtext: that.subTitle, //副标题
                         textAlign: 'auto'//标题位置 left right center
                     },

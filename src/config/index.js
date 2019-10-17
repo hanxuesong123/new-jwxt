@@ -3,8 +3,9 @@ export default {
   cookieExpires:1,
   useI18n:true,
   baseUrl:{
-    dev: 'http://localhost:56700/', //http://localhost:56710/    devlepoyment production
-    pro: 'https://produce.com'
+    //dev: 'http://localhost:56700/',
+    dev: 'http://192.168.18.210:80/',
+    pro: 'http://192.168.18.210:80/'
   },
   homeName:'home',
   plugin:{}

@@ -13,6 +13,10 @@ const mutations = {
   },
   SET_ACCESS(state,access){
    state.access = access;
+  },
+  UN_SET_TOKEN(state,data){
+      state.token = data;
+      state.access = data;
   }
 };
 
@@ -26,7 +30,8 @@ const actions = { //向外暴露的接口
               commit('SET_TOKEN',token); //通过mutations分别向cookie和state中设置token
               resolve();//执行
             }else{
-              return Promise.reject('登录失败');
+                alert(res.data.message)
+                return false;
             }
           })
           .catch(err=>{ //异常
@@ -50,6 +55,9 @@ const actions = { //向外暴露的接口
         reject(error);
       }
     });
+  },
+  logout({commit}){
+    commit('UN_SET_TOKEN',"");
   }
 };
 

@@ -17,3 +17,11 @@ export const getUserInfo  = () =>{
     method:'get'
   });
 };
+
+export const logout = () =>{
+  return axios.request({
+    url:`${api}/logout`,
+    data:null,
+    method:'get'
+  });
+};

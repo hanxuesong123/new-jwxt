@@ -46,11 +46,11 @@
                     <Option :value="'2'">其他专业</Option>
                 </Select>
             </FormItem>
-            <FormItem prop="emergencyContact" label="紧急联络">
-                <Input type="text" placeholder="请输入紧急联系人+电话" v-model="studentObject.emergencyContact" />
+            <FormItem prop="emergencyContact" label="紧急联络人">
+                <Input type="text" placeholder="请输入紧急联络人姓名" v-model="studentObject.emergencyContact" />
             </FormItem>
-            <FormItem prop="relation" label="关系">
-                <Input type="text" placeholder="请输入紧急联系人+电话" v-model="studentObject.relation" />
+            <FormItem prop="relation" label="所属关系及电话">
+                <Input type="text" placeholder="请输入学员与联络人的关系和联络人的电话" v-model="studentObject.relation" />
             </FormItem>
 
             <div class="demo-drawer-footer">

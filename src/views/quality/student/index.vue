@@ -65,7 +65,7 @@
 
         <add-edit-student ref="addEditStudent"></add-edit-student>
         <access-classes ref="accessClasses"></access-classes>
-
+        <access-student-role ref="accessStudentRole"></access-student-role>
 
 
 
@@ -80,7 +80,8 @@
         name: "index",
         components:{
             AddEditStudent:()=>import("@/views/quality/child/add-edit-student.vue"),
-            AccessClasses:()=>import("@/views/quality/child/access-classes.vue")
+            AccessClasses:()=>import("@/views/quality/child/access-classes.vue"),
+            AccessStudentRole:()=>import("@/views/quality/child/access-student-role.vue")
         },
         data(){
             return{
@@ -96,7 +97,8 @@
                         query:this.$access.has_permission('POINT-TEACHER-STUDENT-LIST'),
                         add:this.$access.has_permission('POINT-TEACHER-STUDENT-ADD'),
                         update:this.$access.has_permission('POINT-TEACHER-STUDENT-UPDATE'),
-                        access:this.$access.has_permission('POINT-TEACHER-STUDENT-ACCESS-CLASSES')
+                        access:this.$access.has_permission('POINT-TEACHER-STUDENT-ACCESS-CLASSES'),
+                        role:true
                     }
                 }
             }
@@ -121,6 +123,10 @@
             accessClasses(name,data){
                 this.$refs[name].data = {};
                 this.$refs[name].studentObject = data;
+                this.$refs[name].value = true;
+            },
+            accessStudentRole(name,data){
+                this.$refs[name].userObject = data;
                 this.$refs[name].value = true;
             }
         },
@@ -161,6 +167,9 @@
                             h('Button',{props:{type:'primary',icon:'md-grid',ghost:true,size:'small'},style:{marginRight:'5px',display:that.validate.point.access ? 'inlineBlock':'none' },on:{click(){
                                         that.accessClasses('accessClasses',params.row);
                                     }}},"指定班级"),
+                            h('Button',{props:{type:'primary',icon:'md-grid',ghost:true,size:'small'},style:{marginRight:'5px',display:that.validate.point.role ? 'inlineBlock':'none' },on:{click(){
+                                        that.accessStudentRole('accessStudentRole',params.row);
+                                    }}},"指定角色"),
                         ],'');
                     }}
                 ];

@@ -21,7 +21,7 @@
                 <p>
                     上传视频要求:<br>
                     1.视频内容中,需有操作人姓名<br>
-                    2.视频格式为: xxx<br>
+                    2.视频格式为: mp4<br>
                     3.视频时长: 3分钟以内<br>
                     4.多个上机题也只能上传一个视频<br>
                     <span style="color: red">5.上传视频成功后,即视为交卷,请谨慎操作</span><br>
@@ -29,7 +29,7 @@
                     <Upload ref="upload"
                             name="file"
                             :max-size="1024 * 1024 * 100"
-                            :format="['avi']"
+                            :format="['mp4']"
                             :action="upper_window.url"
                             :headers="{'token':upper_window.token}"
                             :before-upload="beforeUpload"
@@ -142,7 +142,7 @@
                                arr.push(upper.id)
                             });
 
-                            this.upper_window.url = `http://localhost:56700/student/exam/upload/${data.id}/${arr.join(",")}`;
+                            this.upper_window.url = `http://192.168.18.210:80/student/exam/upload/${data.id}/${arr.join(",")}`;
                             this.upper_window.value = true;
                         });
                     }else if(res.data.code === 30101 && data.examStatus != 4){
@@ -159,7 +159,7 @@
                 return false;
             },
             formatError(){
-                this.$Message.error("只能上传AVI格式的文件");
+                this.$Message.error("只能上传MP4格式的文件");
             },
             exceededSize(){
                 this.$Message.error("只能上传小于100MB的文件");
@@ -178,7 +178,7 @@
                 this.getList(this.params);
             },
             handleSubmit(){
-
+                console.log(this.upper_window.file);
                 if(!this.upper_window.file){
                     this.$Message.error("请选择视频");
                     return false;

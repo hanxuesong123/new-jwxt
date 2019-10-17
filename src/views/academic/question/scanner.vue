@@ -11,7 +11,7 @@
           </RadioGroup>
 
          <Button type="primary" icon="ios-search" style="margin-right: 5px" @click="params={page:1,size:20,total:0,type:'1'},value=true">条件查询</Button>
-         <Button type="primary" icon="md-refresh" style="margin-right: 5px" @click="params={page:1,size:20,total:0,type:'1'},getQuestionList(params)">重置查询</Button>
+         <Button type="primary" icon="md-refresh" style="margin-right: 5px" @click="loading = true,params={page:1,size:20,total:0,type:'1'},getQuestionList(params)">重置查询</Button>
 
        </span>
           <Button type="primary" icon="md-add"  :style="{display:validate.point.add ? 'inlineBlock' : 'none'}"  @click="openWindow('addEditQuestion',null)">新增试题</Button>
@@ -134,6 +134,7 @@
 
       },
       radioChange(data){
+        this.loading = true;
         this.params.type = data;
         this.getQuestionList(this.params);
       },
@@ -166,151 +167,148 @@
         let that = this;
 
         if(this.params.type == '1'){//单选题的表头
-
-            return [
-              {type:'index',title:'序号',align:'center'},
-              {key:'discipline',title:'学科',align:'center',render:(h,params)=>{
-                  return h('Tag',{props:{color:params.row.discipline == '1' ? 'blue':'green'}},params.row.discipline == '1' ? '软件' : '网络');
-                }},
-              {key:'lessionName',title:'课程',align:'center'},
-              {key:'sourced',title:'来源',align:'center',render:(h,params)=>{
-                  return h('span',{},params.row.sourced == '1' ? '课程试题' : (params.row.sourced == '2' ? '面试宝典':'企业真题'));
-                }},
-              {key:'companyName',title:'企业',align:'center',render:(h,params)=>{
-                  return h('span',{},params.row.companyId == null ? "/" : params.row.companyName);
-                }},
-              {key:'type',title:"题型",align:'center',render(h,params){
-                  return h('span',{},params.row.type == '1' ? '单选题' : (params.row.type == '2' ? '多选题': (params.row.type == '3') ? "问答题" : "上机题"));
-                }},
-              {key:'singleContent',title:'题干',align:'center',ellipsis:true},
-              {key:'singleStatus',title:'启禁',align:'center',render(h,params){
-                  return h('Tag',{ props:{color:params.row.singleStatus == '1' ? 'success':'error'} },params.row.singleStatus == '1' ? '启用':'禁用');
-                }},
-              {key:'opt',title:"操作",align:'center',render(h,params){
-                  return h('span',[
-                    h('Button',{props:{type:'primary',size:'small',icon:'md-cut',ghost:true},style:{marginRight:'5px',display:that.validate.point.update ? 'inlineBlock':'none' },on:{click(){
-                          that.openWindow("addEditQuestion",params.row);
-                        }}},'修改'),
-                    h('Button',{props:{type:'primary',size:'small',icon:'ios-hammer',ghost:true},style:{marginRight:'5px',display:that.validate.point.opt ? 'inlineBlock':'none' },on:{click(){
-                          that.opt(params.row.id)
-                        }}},'启禁')
-                  ],'');
-                }}
-            ];
+                return [
+                    {type:'index',title:'序号',align:'center'},
+                    {key:'discipline',title:'学科',align:'center',render:(h,params)=>{
+                            return h('Tag',{props:{color:params.row.discipline == '1' ? 'blue':'green'}},params.row.discipline == '1' ? '软件' : '网络');
+                        }},
+                    {key:'lessionName',title:'课程',align:'center'},
+                    {key:'sourced',title:'来源',align:'center',render:(h,params)=>{
+                            return h('span',{},params.row.sourced == '1' ? '课程试题' : (params.row.sourced == '2' ? '面试宝典':'企业真题'));
+                        }},
+                    {key:'companyName',title:'企业',align:'center',render:(h,params)=>{
+                            return h('span',{},params.row.companyId == null ? "/" : params.row.companyName);
+                        }},
+                    {key:'type',title:"题型",align:'center',render(h,params){
+                            return h('span',{},params.row.type == '1' ? '单选题' : (params.row.type == '2' ? '多选题': (params.row.type == '3') ? "问答题" : "上机题"));
+                        }},
+                    {key:'singleContent',title:'题干',align:'center',ellipsis:true},
+                    {key:'singleStatus',title:'启禁',align:'center',render(h,params){
+                            return h('Tag',{ props:{color:params.row.singleStatus == '1' ? 'success':'error'} },params.row.singleStatus == '1' ? '启用':'禁用');
+                        }},
+                    {key:'opt',title:"操作",align:'center',render(h,params){
+                            return h('span',[
+                                h('Button',{props:{type:'primary',size:'small',icon:'md-cut',ghost:true},style:{marginRight:'5px',display:that.validate.point.update ? 'inlineBlock':'none' },on:{click(){
+                                            that.openWindow("addEditQuestion",params.row);
+                                        }}},'修改'),
+                                h('Button',{props:{type:'primary',size:'small',icon:'ios-hammer',ghost:true},style:{marginRight:'5px',display:that.validate.point.opt ? 'inlineBlock':'none' },on:{click(){
+                                            that.opt(params.row.id)
+                                        }}},'启禁')
+                            ],'');
+                        }}
+                ];
         }else if(this.params.type == '2'){//多选题的表头
-
-            return [
-              {type:'index',title:'序号',align:'center'},
-              {key:'discipline',title:'学科',align:'center',render:(h,params)=>{
-                  return h('Tag',{props:{color:params.row.discipline == '1' ? 'blue':'green'}},params.row.discipline == '1' ? '软件' : '网络');
-                }},
-              {key:'lessionName',title:'课程',align:'center'},
-              {key:'sourced',title:'来源',align:'center',render:(h,params)=>{
-                  return h('span',{},params.row.sourced == '1' ? '课程试题' : (params.row.sourced == '2' ? '面试宝典':'企业真题'));
-                }},
-              {key:'companyName',title:'企业',align:'center',render:(h,params)=>{
-                  return h('span',{},params.row.companyId == null ? "/" : params.row.companyName);
-                }},
-              {key:'type',title:"题型",align:'center',render(h,params){
-                  return h('span',{},params.row.type == '1' ? '单选题' : (params.row.type == '2' ? '多选题': (params.row.type == '3') ? "问答题" : "上机题"));
-                }},
-              {key:'mutipleContent',title:'题干',align:'center',ellipsis:true},
-              {key:'mutipleStatus',title:'启禁',align:'center',render(h,params){
-                  return h('Tag',{ props:{color:params.row.mutipleStatus == '1' ? 'success':'error'} },params.row.mutipleStatus == '1' ? '启用':'禁用');
-                }},
-              {key:'opt',title:"操作",align:'center',render(h,params){
-                  return h('span',[
-                    h('Button',{props:{type:'primary',size:'small',icon:'md-cut',ghost:true},style:{marginRight:'5px',display:that.validate.point.update ? 'inlineBlock':'none' },on:{click(){
-                          that.openWindow("addEditQuestion",params.row);
-                        }}},'修改'),
-                    h('Button',{props:{type:'primary',size:'small',icon:'ios-hammer',ghost:true},style:{marginRight:'5px',display:that.validate.point.opt ? 'inlineBlock':'none' },on:{click(){
-                          that.opt(params.row.id)
-                        }}},'启禁')
-                  ],'');
-                }}
-            ];
+                return [
+                    {type:'index',title:'序号',align:'center'},
+                    {key:'discipline',title:'学科',align:'center',render:(h,params)=>{
+                            return h('Tag',{props:{color:params.row.discipline == '1' ? 'blue':'green'}},params.row.discipline == '1' ? '软件' : '网络');
+                        }},
+                    {key:'lessionName',title:'课程',align:'center'},
+                    {key:'sourced',title:'来源',align:'center',render:(h,params)=>{
+                            return h('span',{},params.row.sourced == '1' ? '课程试题' : (params.row.sourced == '2' ? '面试宝典':'企业真题'));
+                        }},
+                    {key:'companyName',title:'企业',align:'center',render:(h,params)=>{
+                            return h('span',{},params.row.companyId == null ? "/" : params.row.companyName);
+                        }},
+                    {key:'type',title:"题型",align:'center',render(h,params){
+                            return h('span',{},params.row.type == '1' ? '单选题' : (params.row.type == '2' ? '多选题': (params.row.type == '3') ? "问答题" : "上机题"));
+                        }},
+                    {key:'mutipleContent',title:'题干',align:'center',ellipsis:true},
+                    {key:'mutipleStatus',title:'启禁',align:'center',render(h,params){
+                            return h('Tag',{ props:{color:params.row.mutipleStatus == '1' ? 'success':'error'} },params.row.mutipleStatus == '1' ? '启用':'禁用');
+                        }},
+                    {key:'opt',title:"操作",align:'center',render(h,params){
+                            return h('span',[
+                                h('Button',{props:{type:'primary',size:'small',icon:'md-cut',ghost:true},style:{marginRight:'5px',display:that.validate.point.update ? 'inlineBlock':'none' },on:{click(){
+                                            that.openWindow("addEditQuestion",params.row);
+                                        }}},'修改'),
+                                h('Button',{props:{type:'primary',size:'small',icon:'ios-hammer',ghost:true},style:{marginRight:'5px',display:that.validate.point.opt ? 'inlineBlock':'none' },on:{click(){
+                                            that.opt(params.row.id)
+                                        }}},'启禁')
+                            ],'');
+                        }}
+                ];
         }else if(this.params.type == '3'){//问答题的表头
-            return [
-              {type:'index',title:'序号',align:'center'},
-              {key:'discipline',title:'学科',align:'center',render:(h,params)=>{
-                  return h('Tag',{props:{color:params.row.discipline == '1' ? 'blue':'green'}},params.row.discipline == '1' ? '软件' : '网络');
-                }},
-              {key:'lessionName',title:'课程',align:'center'},
-              {key:'sourced',title:'来源',align:'center',render:(h,params)=>{
-                  return h('span',{},params.row.sourced == '1' ? '课程试题' : (params.row.sourced == '2' ? '面试宝典':'企业真题'));
-                }},
-              {key:'companyName',title:'企业',align:'center',render:(h,params)=>{
-                  return h('span',{},params.row.companyId == null ? "/" : params.row.companyName);
-                }},
-              {key:'type',title:"题型",align:'center',render(h,params){
-                  return h('span',{},params.row.type == '1' ? '单选题' : (params.row.type == '2' ? '多选题': (params.row.type == '3') ? "问答题" : "上机题"));
-                }},
-              {key:'askContent',title:'题干',align:'center',tooltip:true},
-              {key:'askStatus',title:'启禁',align:'center',render(h,params){
-                  return h('Tag',{ props:{color:params.row.askStatus == '1' ? 'success':'error'} },params.row.askStatus == '1' ? '启用':'禁用');
-                }},
-              {key:'opt',title:"操作",align:'center',render(h,params){
-                  return h('span',[
-                    h('Button',{props:{type:'primary',size:'small',icon:'md-cut',ghost:true},style:{marginRight:'5px',display:that.validate.point.update ? 'inlineBlock':'none' },on:{click(){
-                          that.openWindow("addEditQuestion",params.row);
-                        }}},'修改'),
-                    h('Button',{props:{type:'primary',size:'small',icon:'ios-hammer',ghost:true},style:{marginRight:'5px',display:that.validate.point.opt ? 'inlineBlock':'none' },on:{click(){
-                          that.opt(params.row.id)
-                        }}},'启禁')
-                  ],'');
-                }}
-            ];
 
+                return [
+                    {type:'index',title:'序号',align:'center'},
+                    {key:'discipline',title:'学科',align:'center',render:(h,params)=>{
+                            return h('Tag',{props:{color:params.row.discipline == '1' ? 'blue':'green'}},params.row.discipline == '1' ? '软件' : '网络');
+                        }},
+                    {key:'lessionName',title:'课程',align:'center'},
+                    {key:'sourced',title:'来源',align:'center',render:(h,params)=>{
+                            return h('span',{},params.row.sourced == '1' ? '课程试题' : (params.row.sourced == '2' ? '面试宝典':'企业真题'));
+                        }},
+                    {key:'companyName',title:'企业',align:'center',render:(h,params)=>{
+                            return h('span',{},params.row.companyId == null ? "/" : params.row.companyName);
+                        }},
+                    {key:'type',title:"题型",align:'center',render(h,params){
+                            return h('span',{},params.row.type == '1' ? '单选题' : (params.row.type == '2' ? '多选题': (params.row.type == '3') ? "问答题" : "上机题"));
+                        }},
+                    {key:'askContent',title:'题干',align:'center',tooltip:true},
+                    {key:'askStatus',title:'启禁',align:'center',render(h,params){
+                            return h('Tag',{ props:{color:params.row.askStatus == '1' ? 'success':'error'} },params.row.askStatus == '1' ? '启用':'禁用');
+                        }},
+                    {key:'opt',title:"操作",align:'center',render(h,params){
+                            return h('span',[
+                                h('Button',{props:{type:'primary',size:'small',icon:'md-cut',ghost:true},style:{marginRight:'5px',display:that.validate.point.update ? 'inlineBlock':'none' },on:{click(){
+                                            that.openWindow("addEditQuestion",params.row);
+                                        }}},'修改'),
+                                h('Button',{props:{type:'primary',size:'small',icon:'ios-hammer',ghost:true},style:{marginRight:'5px',display:that.validate.point.opt ? 'inlineBlock':'none' },on:{click(){
+                                            that.opt(params.row.id)
+                                        }}},'启禁')
+                            ],'');
+                        }}
+                ];
         }else if(this.params.type == '4'){//上机题的表头
+                return [
+                    {type:'index',title:'序号',align:'center'},
+                    {key:'discipline',title:'学科',align:'center',render:(h,params)=>{
+                            return h('Tag',{props:{color:params.row.discipline == '1' ? 'blue':'green'}},params.row.discipline == '1' ? '软件' : '网络');
+                        }},
+                    {key:'lessionName',title:'课程',align:'center'},
+                    {key:'sourced',title:'来源',align:'center',render:(h,params)=>{
+                            return h('span',{},params.row.sourced == '1' ? '课程试题' : (params.row.sourced == '2' ? '面试宝典':'企业真题'));
+                        }},
+                    {key:'companyName',title:'企业',align:'center',render:(h,params)=>{
+                            return h('span',{},params.row.companyId == null ? "/" : params.row.companyName);
+                        }},
+                    {key:'type',title:"题型",align:'center',render(h,params){
+                            return h('span',{},params.row.type == '1' ? '单选题' : (params.row.type == '2' ? '多选题': (params.row.type == '3') ? "问答题" : "上机题"));
+                        }},
+                    {key:'upperContent',title:'题干',align:'center',tooltip:true},
+                    {key:'downResources',title:'资源',align:'center',render(h,params){
+                            return h('a',{props:{disabled: !that.validate.point.download},on:{click(){
+                                        if(params.row.upperUrl){
+                                            that.$Modal.confirm({
+                                                title:'友情提示',
+                                                content:'确定要下载吗?',
+                                                onOk(){
+                                                    window.location.href = params.row.upperUrl;
+                                                }
+                                            })
 
-            return [
-              {type:'index',title:'序号',align:'center'},
-              {key:'discipline',title:'学科',align:'center',render:(h,params)=>{
-                  return h('Tag',{props:{color:params.row.discipline == '1' ? 'blue':'green'}},params.row.discipline == '1' ? '软件' : '网络');
-                }},
-              {key:'lessionName',title:'课程',align:'center'},
-              {key:'sourced',title:'来源',align:'center',render:(h,params)=>{
-                  return h('span',{},params.row.sourced == '1' ? '课程试题' : (params.row.sourced == '2' ? '面试宝典':'企业真题'));
-                }},
-              {key:'companyName',title:'企业',align:'center',render:(h,params)=>{
-                  return h('span',{},params.row.companyId == null ? "/" : params.row.companyName);
-                }},
-              {key:'type',title:"题型",align:'center',render(h,params){
-                  return h('span',{},params.row.type == '1' ? '单选题' : (params.row.type == '2' ? '多选题': (params.row.type == '3') ? "问答题" : "上机题"));
-                }},
-              {key:'upperContent',title:'题干',align:'center',tooltip:true},
-              {key:'downResources',title:'资源',align:'center',render(h,params){
-                  return h('a',{props:{disabled: !that.validate.point.download},on:{click(){
-                        if(params.row.upperUrl){
-                          that.$Modal.confirm({
-                            title:'友情提示',
-                            content:'确定要下载吗?',
-                            onOk(){
-                              window.location.href = params.row.upperUrl;
-                            }
-                          })
+                                        }else{
+                                            that.$Message.error("没有可供下载的资源");
+                                            return false;
+                                        }
 
-                        }else{
-                          that.$Message.error("没有可供下载的资源");
-                          return false;
-                        }
-
-                      }}},'下载');
-                }},
-              {key:'upperStatus',title:'启禁',align:'center',render(h,params){
-                  return h('Tag',{ props:{color:params.row.upperStatus == '1' ? 'success':'error'} },params.row.upperStatus == '1' ? '启用':'禁用');
-                }},
-              {key:'opt',title:"操作",align:'center',render(h,params){
-                  return h('span',[
-                    h('Button',{props:{type:'primary',size:'small',icon:'md-cut',ghost:true},style:{marginRight:'5px',display:that.validate.point.update ? 'inlineBlock':'none' },on:{click(){
-                          that.openWindow("addEditQuestion",params.row);
-                        }}},'修改'),
-                    h('Button',{props:{type:'primary',size:'small',icon:'ios-hammer',ghost:true},style:{marginRight:'5px',display:that.validate.point.opt ? 'inlineBlock':'none' },on:{click(){
-                          that.opt(params.row.id)
-                        }}},'启禁')
-                  ],'');
-                }}
-            ];
+                                    }}},'下载');
+                        }},
+                    {key:'upperStatus',title:'启禁',align:'center',render(h,params){
+                            return h('Tag',{ props:{color:params.row.upperStatus == '1' ? 'success':'error'} },params.row.upperStatus == '1' ? '启用':'禁用');
+                        }},
+                    {key:'opt',title:"操作",align:'center',render(h,params){
+                            return h('span',[
+                                h('Button',{props:{type:'primary',size:'small',icon:'md-cut',ghost:true},style:{marginRight:'5px',display:that.validate.point.update ? 'inlineBlock':'none' },on:{click(){
+                                            that.openWindow("addEditQuestion",params.row);
+                                        }}},'修改'),
+                                h('Button',{props:{type:'primary',size:'small',icon:'ios-hammer',ghost:true},style:{marginRight:'5px',display:that.validate.point.opt ? 'inlineBlock':'none' },on:{click(){
+                                            that.opt(params.row.id)
+                                        }}},'启禁')
+                            ],'');
+                        }}
+                ];
         }
       }
     },

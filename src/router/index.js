@@ -72,7 +72,8 @@ router.beforeEach((to,from,next)=>{
       store.dispatch('getUserInfo').then(user=>{
         //拉取用户信息,通过用户权限和跳转的页面的name来判断是否有权访问,access必须是一个数组
         //如：['super_admin'] ['super_admin', 'admin']
-        turnTo(to,user.data.data,next);
+        //turnTo(to,user.data.data,next);
+        refresh(to,store.state.user.access,next,from);
       }).catch(()=>{
         setToken('');
         next({name:'login'});
@@ -80,6 +81,22 @@ router.beforeEach((to,from,next)=>{
     }
   }
 });
+
+export const refresh=(to, access, next,from)=>{
+  let toName=to.name;
+  // console.log('要去的路由',to.name);
+  // console.log('权限路由列表',access.roles.menus);
+  let arr=access.roles.menus;
+  arr.forEach(item=>{
+    if(item==toName){
+      next({replace: true, name:toName});
+    }
+  });
+  if(toName =="home"){
+    next({replace: true, name:toName});
+  }
+};
+
 
 
 export default router;

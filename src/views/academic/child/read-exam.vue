@@ -62,7 +62,7 @@
                 this.$Modal.confirm({
                     title:'友情提示',
                     content:'确定评分吗?',
-                    loading:true,
+                    //loading:true,
                     onOk:()=>{
                         score.askScore = this.askScore;
                         lastExam(score).then(res=>{

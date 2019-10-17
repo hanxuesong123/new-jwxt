@@ -1,75 +1,73 @@
 <template>
     <div>
-        <Card :bordered="false" :dis-hover="true">
-
-            <Tag color="warning" style="height:32px;text-align: center;margin-right: 15px;padding-top: 5px">日测笔试监控</Tag>
-            <DatePicker @on-change="dateChange" type="date" :clearable="false" placeholder="请选择时间"></DatePicker>
-            <span style="margin: 0px 15px 0px 15px">所选日期:{{computed_date}}</span>
-            <Select v-model="params.classesId" placeholder="请选择班级" style="width: 200px;margin-right: 15px">
-                <Option v-for="classes in classesArray" :value="classes.id" :key="classes.id">{{classes.className}}</Option>
-            </Select>
-            <Button type="primary" icon="ios-search" @click="getList(params)">查询数据</Button>
-
-        </Card>
-        <Card :bordered="false" :dis-hover="true">
-            <Table :data="data" :columns="columns" :border="true" size="small"></Table>
-        </Card>
+        <Modal v-model="value" title="学员成绩总览" :width="1600" :footer-hide="true" :closable="false" >
+           <Card :bordered="false" :dis-hover="true">
+               <template slot="title">
+                   <span>温馨提示: 请选择开始日期和结束日期后进行数据展示</span> &nbsp;&nbsp;&nbsp;
+                   <DatePicker type="daterange" :clearable="false" :editable="false" separator="~" @on-change="dateChange" placeholder="请选择日期区间" style="width: 200px"></DatePicker>
+               </template>
+           </Card>
+            <Card :bordered="false" :dis-hover="true">
+                <div id="myChart1" :style="{width: '1500px', height: '500px'}"></div>
+            </Card>
+        </Modal>
     </div>
 </template>
 
 <script>
 
-    import { getDays,formatTime,getDay,getCountDays } from "@/utils/tools";
-    import { getDayExamList } from "@/api/academic/supervise";
-    import { findClasses } from "@/api/quality/classes";
+    import { findSingleStudentScores } from "@/api/academic/exam";
+    import { formatTime } from "@/utils/tools";
 
     export default {
-        name: "score_supervise",
+        name: "analysis-window",
         data(){
             return {
-                params:{
-                    date:new Date(),
-                    classesId:''
-                },
-                data:[],
-                classesArray:[]
+                value : false,
+                examObject:{},
+                data:{},//学生信息
+                params:{studentId:'',date:'',examType:''},
+                yData: [],// [120, 500, 150, 80, 70, 110, 130],
+                xData:[],//['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
             }
         },
-        computed:{
-            computed_date(){
-              return formatTime(this.params.date);
-            },
-            columns(){
-                let that = this;
-                let arr = [];
-                let date = this.params.date;
-                let days = getDays(date);
-                let data = {};
-                arr.push({fixed:'left',key:'className',width:'100px', title:'班级',align:'center'});
-                arr.push({fixed:'left',key:'nickName',width:'100px', title:'姓名',align:'center'});
-                for(let i = 1 ; i <= days ; i ++){
-                    arr.push({width:'70px',key:'col'+ i,title:i,align:'center'});
+        watch:{
+            'params.date'(data){
+                if(data){
+                    this.params.examType = this.examObject.examType;
+                    this.params.studentId = this.data.studentId;
+                    findSingleStudentScores(this.params).then(res=>{
+                        if(res.data.code == 10000){
+                            if(res.data.data.length > 0){
+                                this.xData = [];
+                                this.yData = [];
+                                res.data.data.forEach(item=>{
+                                    this.xData.push(formatTime(item.executeTime));
+                                    this.yData.push(item.score);
+                                });
+                                this.init();
+                            }
+                        }else{
+                            this.$Message.error(res.message);
+                            return false;
+                        }
+                    });
                 }
-                arr.push({fixed:'left',key:'svg',width:'100px', title:'个人平均分',align:'center'});
-                return arr;
-            },
+            }
         },
         methods:{
-            getList(data){
-                getDayExamList(data).then(res=>{
-                    if(res.data && res.data.data){
-                        this.data = res.data.data
-                    }else{
-                        this.data = [];
-                    }
-                });
+            dateChange(data){
+                if(data){
+                    this.params.date = data.join(",");
+                }
             },
-            dateChange(date){
-                this.params.date = new Date(date);
+            clear(){
+                let myChart = this.$echarts.init(document.getElementById('myChart1'));
+                myChart.clear();
             },
             init() {
                 let that = this;
-                let myChart = this.$echarts.init(document.getElementById('myChart2'));  //实例化echarts容器
+                let myChart = this.$echarts.init(document.getElementById('myChart1'));  //实例化echarts容器
                 // 绘制图表
                 myChart.setOption({
                     title: { //标题项
@@ -114,7 +112,7 @@
                     series: [
                         {
                             name: '数据:', //提示文本
-                            type: 'line', //非常关键的属性:  决定了是哪个类别的图形 line 折线图 bar 柱状图  pie饼状图  scatter气泡(散点)图
+                            type: 'bar', //非常关键的属性:  决定了是哪个类别的图形 line 折线图 bar 柱状图  pie饼状图  scatter气泡(散点)图
                             label: {
                                 show: true  //在图形上是否显示数据
                             },
@@ -125,10 +123,6 @@
                     animation: true //是否开启动画
                 }, true);
             }
-
-        },
-        created() {
-            findClasses().then(res=>this.classesArray = res.data.data);
         }
     }
 </script>
