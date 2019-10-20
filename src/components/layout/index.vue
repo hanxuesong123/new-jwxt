@@ -3,7 +3,7 @@
     <Header style="background-color: black">
       <Row style="border: 2px">
         <Col :span="4">
-          <img src="../../assets/image/logo-new.png" width="100px" height="50px" style="margin-top: 10px" />
+          <img src="../../assets/image/logo-new1.png" width="100px" height="50px" style="margin-top: 10px" />
         </Col>
         <Col :span="7">
           <h1 class="text-gradient" style="font-size: 30px">河北省石家庄市智谷 &nbsp; ★ &nbsp; 青鸟教务</h1>

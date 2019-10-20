@@ -100,7 +100,7 @@
   .login{
     width: 100%;
     height: 100vh;
-    background-image: url("../../assets/image/bg-new.jpg");
+    background-image: url("../../assets/image/bg-new1.jpg");
     padding: 10px 10px 10px 10px;
     background-size: cover;
     background-position: center;

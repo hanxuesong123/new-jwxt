@@ -17,6 +17,8 @@ import 'element-ui/lib/theme-chalk/index.css';
 
 import eCharts from 'echarts';
 import countTo from 'vue-count-to'
+import InfoCard from '@/components/info-card/infor-card.vue'
+
 
 require('video.js/dist/video-js.css')
 require('vue-video-player/src/custom-theme.css')
@@ -28,6 +30,7 @@ Vue.prototype.$echarts = eCharts;
 Vue.component("count-to",countTo);
 Vue.component("self-table",SelfTable);
 Vue.component("charts",Charts);
+Vue.component("info-card",InfoCard);
 Vue.use(iView);
 Vue.use(iEditor);
 Vue.use(elementUI);
