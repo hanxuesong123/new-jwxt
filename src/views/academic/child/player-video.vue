@@ -60,7 +60,7 @@
         },
         methods:{
             handleSubmit(){
-                console.log("zipUrl:",this.data.list[0].zipUrl);
+
                 this.data.score.upperScore = this.upperScore;
                 lastExam(this.data.score).then(res=>{
                     this.$Message.info(res.data.message);
@@ -70,7 +70,7 @@
                 })
             },
             cancel(){
-                console.log(this.data.list);
+
                 this.data.score.upperScore = 0;
                 this.upperScore = 0;
                 this.value = false;

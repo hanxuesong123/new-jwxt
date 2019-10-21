@@ -197,7 +197,6 @@
 
       this.$nextTick(function(){
         let path = this.$route.path;
-        console.log(path);
         let arr = path.split("/");
         if(arr[1] != null){
           this.menu.totalMenu.forEach(item=>{

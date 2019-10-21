@@ -19,7 +19,7 @@
 
 <script>
 
-    import { getChapters,getRandomQuestionByChapter } from "@/api/student/exercise";
+    import { getChapters,getRandomQuestionByChapter,queryStudentExamStatus } from "@/api/student/exercise";
 
     export default {
         name: "exercise-question",
@@ -51,30 +51,36 @@
                     return false;
                 }
                 //TODO: 是否有考试的试卷,如果有,不能答题
+                queryStudentExamStatus().then(res=>{
+                   if(res.data.code == 56789){
+                       this.$Modal.success({
+                           title:'友情提示',
+                           content:'有未结束的考试,无法进入刷题'
+                       });
+                       return false;
+                   }else{
+                       let params = {type:type,chapterId:chapterId};
+                       this.$refs['exerciseQuestionInfo'].params = params;
 
-
-                let params = {type:type,chapterId:chapterId};
-                this.$refs['exerciseQuestionInfo'].params = params;
-
-                getRandomQuestionByChapter(params).then(res=>{
-                    if(res.data.code == 10000){
-                        if(res.data.data.length == 0){
-                            this.$Message.error("该课程没有试题");
-                            return false;
-                        }else{
-                            this.$refs['exerciseQuestionInfo'].count = 0;
-                            this.$refs['exerciseQuestionInfo'].studentAnswer = '';
-                            this.$refs['exerciseQuestionInfo'].mutipleAsk = [];
-                            this.$refs['exerciseQuestionInfo'].disabledValue = false;
-                            this.$refs['exerciseQuestionInfo'].hiddenTag = 'none';
-                            this.$refs['exerciseQuestionInfo'].question = res.data.data;
-                            this.$refs['exerciseQuestionInfo'].value = true;
-                        }
-                    }
-                    console.log(res.data.data)
+                       getRandomQuestionByChapter(params).then(res=>{
+                           if(res.data.code == 10000){
+                               if(res.data.data.length == 0){
+                                   this.$Message.error("该课程没有试题");
+                                   return false;
+                               }else{
+                                   this.$refs['exerciseQuestionInfo'].count = 0;
+                                   this.$refs['exerciseQuestionInfo'].successQuestionCount = 0;
+                                   this.$refs['exerciseQuestionInfo'].studentAnswer = '';
+                                   this.$refs['exerciseQuestionInfo'].mutipleAsk = [];
+                                   this.$refs['exerciseQuestionInfo'].disabledValue = false;
+                                   this.$refs['exerciseQuestionInfo'].hiddenTag = 'none';
+                                   this.$refs['exerciseQuestionInfo'].question = res.data.data;
+                                   this.$refs['exerciseQuestionInfo'].value = true;
+                               }
+                           }
+                       });
+                   }
                 });
-
-
             }
         }
     }

@@ -41,3 +41,27 @@ export const saveErrorQuestion = data =>{
         url:`${api}/exercise/saveErrorQuestion`
     });
 };
+
+export const queryStudentExamStatus = () =>{
+    return axios.request({
+        method:'get',
+        data:null,
+        url:`${api}/exercise/queryStudentExamStatus`
+    });
+};
+
+export const getStudentErrorQuestionList = data => {
+    return axios.request({
+        method:'post',
+        data:data,
+        url:`${api}/exercise/getStudentErrorQuestionList`
+    });
+};
+
+export const removeErrorQuestion = data => {
+    return axios.request({
+        method:'delete',
+        data:null,
+        url:`${api}/exercise/removeErrorQuestion/${data}`
+    });
+};

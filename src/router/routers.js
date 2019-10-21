@@ -349,6 +349,16 @@ export default [
           icon:'',
           hideInMenu:false
         }
+      },
+      {
+        path:'student_exercise_error',
+        name:'student_exercise_error',
+        component:()=>import("@/views/student/exam/exercise-error.vue"),
+        meta:{
+          title:'错题仓库',
+          icon:'',
+          hideInMenu:false
+        }
       }
     ]
   }

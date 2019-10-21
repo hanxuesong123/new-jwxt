@@ -44,6 +44,9 @@ class HttpRequest {
 
     //响应拦截
     instance.interceptors.response.use(res=>{
+        if(res.status == 500){
+            this.$Message.info("您的网络不稳定, 请稍后再试...");
+        }
           delete this.queue[url];
           return res;
         },

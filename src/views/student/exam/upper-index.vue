@@ -178,7 +178,7 @@
                 this.getList(this.params);
             },
             handleSubmit(){
-                console.log(this.upper_window.file);
+
                 if(!this.upper_window.file){
                     this.$Message.error("请选择视频");
                     return false;

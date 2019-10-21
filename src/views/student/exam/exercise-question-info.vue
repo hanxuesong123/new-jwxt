@@ -43,7 +43,7 @@
             <template slot="footer">
                 <Button @click="saveErrorQuestion({questionId:question[count].id,questionType:question[count].type,lessionId:question[count].lessionId})" :disabled="params.type != '3'" type="error">加入错题</Button>
                 <Button type="success" @click="showAnswer" :disabled="params.type == '3' || params.type == '4'">查看答案</Button>
-                <Button type="primary" @click="nextQuestion" :disabled="count == (question.length-1)">下一题</Button>
+                <Button type="primary" @click="nextQuestion" >下一题</Button><!--:disabled="count == (question.length-1)"-->
             </template>
         </Modal>
     </div>
@@ -67,10 +67,25 @@
                 studentAnswer:'',
                 hiddenTag:'none',
                 disabledValue : false,
+                successQuestionCount:0
+            }
+        },
+        watch:{
+            value(data){
+                if(!data){
+                    this.$Modal.success({
+                        title: '友情提示',
+                        content: `本次回答了${this.count}次,答对了${this.successQuestionCount}道题`
+                    });
+                }
             }
         },
         methods:{
             nextQuestion(){
+                if(this.count > (this.question.length - 1)){
+                    this.$Message.error("没有试题了");
+                    return false;
+                }
                 switch (this.question[this.count].type) {
                     case "1":
                         if(!this.studentAnswer){
@@ -85,7 +100,8 @@
                                 let params = {
                                     questionId:this.question[this.count].id,
                                     questionType:this.question[this.count].type,
-                                    lessionId:this.question[this.count].lessionId
+                                    lessionId:this.question[this.count].lessionId,
+                                    studentAnswer:this.studentAnswer
                                 };
                                 this.$Notice.error({
                                     title: '友情提示',
@@ -93,6 +109,7 @@
                                 });
                                 this.saveErrorQuestion(params);
                             }else{
+                                this.successQuestionCount += 1;
                                 this.$Notice.success({
                                     title: '友情提示',
                                     desc: '回答正确'
@@ -119,7 +136,8 @@
                                 let params = {
                                     questionId:this.question[this.count].id,
                                     questionType:this.question[this.count].type,
-                                    lessionId:this.question[this.count].lessionId
+                                    lessionId:this.question[this.count].lessionId,
+                                    studentAnswer:this.showMutipleAsk
                                 };
                                 this.$Notice.error({
                                     title: '友情提示',
@@ -127,6 +145,7 @@
                                 });
                                 this.saveErrorQuestion(params);
                             }else{
+                                this.successQuestionCount += 1;
                                 this.$Notice.success({
                                     title: '友情提示',
                                     desc: '回答正确'
@@ -162,7 +181,8 @@
                                 let params = {
                                     questionId:this.question[this.count].id,
                                     questionType:this.question[this.count].type,
-                                    lessionId:this.question[this.count].lessionId
+                                    lessionId:this.question[this.count].lessionId,
+                                    studentAnswer:this.studentAnswer
                                 };
                                 this.$Notice.error({
                                     title: '友情提示',
@@ -189,7 +209,8 @@
                                 let params = {
                                     questionId:this.question[this.count].id,
                                     questionType:this.question[this.count].type,
-                                    lessionId:this.question[this.count].lessionId
+                                    lessionId:this.question[this.count].lessionId,
+                                    studentAnswer:this.showMutipleAsk
                                 };
                                 this.$Notice.error({
                                     title: '友情提示',
