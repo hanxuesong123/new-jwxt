@@ -45,3 +45,26 @@ export const updatePassword = data =>{
     method:'put'
   });
 };
+
+export const checkTelephone = data =>{
+  return axios.request({
+    url:`${api}/user/checkTelephone`,
+    data:data,
+    method:'post'
+  });
+};
+export const sendCode = data =>{
+  return axios.request({
+    url:`${api}/user/sendCode`,
+    data:data,
+    method:'post'
+  });
+};
+
+export const updatePasswordByCode = data =>{
+  return axios.request({
+    url:`${api}/user/updatePasswordByCode`,
+    data:data,
+    method:'post'
+  });
+};

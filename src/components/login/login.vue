@@ -27,7 +27,11 @@
             <Button @click="handleSubmit('loginForm')" type="primary" long>登陆</Button>
           </FormItem>
         </Form>
+        <div style="text-align: center">
+          <a  style="color: white" href="#" @click="updatePassword">忘记密码?</a>
+        </div>
       </Card>
+    <update-password ref="updatePassword"></update-password>
   </div>
 </template>
 
@@ -37,6 +41,9 @@
 
   export default {
     name: 'login',
+    components:{
+      UpdatePassword:()=>import("@/components/login/update-password.vue")
+    },
     props:{
       usernameRules:{
         type:Array,
@@ -79,6 +86,10 @@
             return false;
           }
         });
+      },
+      updatePassword(){
+        this.$refs['updatePassword'].params = {};
+        this.$refs['updatePassword'].value = true;
       }
     },
     computed:{
@@ -93,10 +104,6 @@
 </script>
 
 <style scoped>
-  .login-title{
-
-  }
-
   .login{
     width: 100%;
     height: 100vh;

@@ -50,7 +50,7 @@
                     this.$Message.info('暂不支持上机刷题');
                     return false;
                 }
-                //TODO: 是否有考试的试卷,如果有,不能答题
+
                 queryStudentExamStatus().then(res=>{
                    if(res.data.code == 56789){
                        this.$Modal.success({

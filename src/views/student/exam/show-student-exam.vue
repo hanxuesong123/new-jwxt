@@ -123,6 +123,7 @@
                     <template slot="title">
                         <h3>第{{index + 1}}题:&nbsp;&nbsp;&nbsp; {{ask.askContent}}</h3>
                     </template>
+                    <p>{{studentResultArray.ask[index].askAnswer || "没有填写任何答案" }}</p>
                 </Card>
             </Card>
 
@@ -137,6 +138,7 @@
                 <Card v-for="(upper,index) in questionArray.upperList" :key="upper.id" style="margin-bottom: 50px" :bordered="false" :dis-hover="true">
                     <template slot="title">
                         <h3><Tag color="success">上机题第{{index + 1}}题:</Tag>  {{upper.upperContent}}</h3>
+                        <!--<Input v-model="studentResultArray.ask[index].askAnswer" placeholder="暂无答案" type="textarea" :disabled="true" >-->
                     </template>
                 </Card>
             </Card>
