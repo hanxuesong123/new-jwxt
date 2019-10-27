@@ -1,6 +1,6 @@
 <template>
     <div>
-        <Modal v-model="value"  title="考试" :closable="true" :fullscreen="true" :footer-hide="true" :loading="loading" @on-cancel="cancel">
+        <Modal v-model="value"  title="考试" :closable="false" :fullscreen="true" :footer-hide="true" :loading="loading" @on-cancel="cancel">
             <Row>
                 <Col :span="24">
                     <!--进度条-->
@@ -180,28 +180,25 @@
 
                         if(res && res.data && res.data.data){
                             let array = res.data.data.split("#"); //5,3,5,5,5#5@5@5@5@5#sdadad$&大声道撒大所多
-                            this.singleAsk = array[0].split(",");
 
-                            //TODO: 后添加的进度条计算
-                            let count = this.singleAsk.filter(item=>{return item != 5;}).length;
-                            this.number.single = count;
-                            this.number.total = Math.ceil(((count + this.number.mutiple + this.number.ask ) / this.circle) * 100);
+                            if(array[0]){
+                                this.singleAsk = array[0].split(",");
+                                //TODO: 后添加的进度条计算
+                                let count = this.singleAsk.filter(item=>{return item != 5;}).length;
+                                this.number.single = count;
+                                this.number.total = Math.ceil(((count + this.number.mutiple + this.number.ask ) / this.circle) * 100);
+                            }
 
-
-                            //5,2,3,4 5,3,4 5,1,2 5,1,2,3,4 5,1,2,3
                             if(array[1]){
                                 let arr = [];
                                 array[1].split("@").forEach(item=>{
                                     arr.push(item.split(","));
                                 });
                                 this.mutipleAsk = arr;
-
                                 //TODO: 后添加的进度条计算
                                 let count = this.mutipleAsk.filter(item=>{return  item.length > 1;}).length;
                                 this.number.mutiple = count;
                                 this.number.total = Math.ceil(((this.number.single + count + this.number.ask ) / this.circle) *100 )
-
-
                             }
 
                             if(array[2]){
@@ -214,10 +211,7 @@
                                 let count = this.askAsk.filter(item=>{return !item.includes("暂无任何内容");}).length;
                                 this.number.ask = count;
                                 this.number.total = Math.ceil(((this.number.single + this.number.mutiple + count) / this.circle) * 100)
-
                             }
-
-
                         }
                     });
 
@@ -240,11 +234,12 @@
 
                     this.saveTempAnswerTimer = setInterval(()=>{
                         if(this.examData && this.examData.id){
-                            //this.askAsk = [];
                             let data = {id:this.examData.id,single:this.singleAsk.join(","),mutiple:this.mutipleAsk.join("@"),ask:this.askAsk.join("!&")};
                             saveTempAnswer(data);
                         }
                     },1000 * 20);
+
+                    this.toggleFullScreen();
                 }
             },
             singleAsk(data){ //监听单选题选项 如果学生操作单选题,则影响进度条
@@ -339,6 +334,11 @@
                     }
                 }
             }
+        },
+        mounted() {
+            /*window.addEventListener('keydown', event => {
+
+            })*/
         }
     }
 </script>
